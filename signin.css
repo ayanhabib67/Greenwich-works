@@ -1,0 +1,106 @@
+/* =====================================================================
+   signin.css                    Greenwich Works portal · 21 September 2026
+
+   The sign-in screen: the Karachi skyline at dawn, and the mark building
+   itself out of the city (register AX / the Chair's "dynamic login screen
+   with animation").  Self-contained — it styles only `.gws-*` classes and
+   touches nothing else in app.css.
+
+   WEIGHT   two JPGs, 28 KB (phone) and 83 KB (laptop).  No video, no
+            library, no web font of its own.  The whole animation is CSS.
+   MOTION   the city rises, the dawn breaks, the card follows.  It runs
+            ONCE on load, takes 2.8 s, and never loops except for one very
+            slow glow that a reader will not notice.
+   REDUCED  under prefers-reduced-motion every element is painted in its
+            final state with no animation at all.
+   OFFLINE  works in demo mode with no network.
+   ===================================================================== */
+
+.gws-stage{position:fixed;inset:0;overflow:hidden;background:#0d2a28;z-index:0}
+
+/* --- the sky ------------------------------------------------------- */
+.gws-sky{position:absolute;inset:0;background-image:image-set(url("assets/signin-sky-900.jpg") 1x, url("assets/signin-sky.jpg") 2x);
+  background-image:url("assets/signin-sky.jpg");background-size:cover;background-position:50% 64%;
+  transform:scale(1.06);filter:brightness(.42) saturate(.7);animation:gws-dawn 2.8s cubic-bezier(.22,.61,.36,1) .15s both}
+@media (max-width:700px){.gws-sky{background-image:url("assets/signin-sky-900.jpg");background-position:62% 80%}}
+@keyframes gws-dawn{from{transform:scale(1.06);filter:brightness(.42) saturate(.7)}
+                    to{transform:scale(1);filter:brightness(1) saturate(1)}}
+
+/* the sun's glow — the one thing that keeps moving, very slowly */
+.gws-glow{position:absolute;left:50%;bottom:8%;width:70vmax;height:70vmax;transform:translate(-50%,40%);
+  background:radial-gradient(circle,rgba(217,166,83,.30) 0%,rgba(217,166,83,.10) 38%,transparent 66%);
+  opacity:0;animation:gws-glow-in 2.4s ease-out 1s both, gws-breathe 24s ease-in-out 3.4s infinite}
+@keyframes gws-glow-in{to{opacity:1}}
+@keyframes gws-breathe{0%,100%{transform:translate(-50%,40%) scale(1)}50%{transform:translate(-50%,40%) scale(1.09)}}
+
+/* The veil used to be a full-width dark wash top to bottom, which buried the
+   picture it was there to protect: the dawn, the Mazar and the cranes all went
+   to a flat teal.  It is now a scrim on the LEFT, where the white type sits,
+   fading to nothing across the middle so the picture is actually seen behind
+   the card — plus the faintest overall wash to keep the whole thing one colour. */
+.gws-veil{position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(11,38,35,.86) 0%,rgba(11,38,35,.72) 26%,rgba(11,38,35,.30) 52%,rgba(11,38,35,.10) 72%,rgba(11,38,35,.22) 100%),
+             linear-gradient(180deg,rgba(11,38,35,.24) 0%,rgba(11,38,35,0) 34%,rgba(11,38,35,.30) 100%)}
+/* on a phone the two columns stack, so the scrim has to run top-to-bottom instead */
+@media (max-width:860px){
+  .gws-veil{background:linear-gradient(180deg,rgba(11,38,35,.34) 0%,rgba(11,38,35,.22) 30%,rgba(11,38,35,.46) 70%,rgba(11,38,35,.62) 100%)}
+}
+
+/* --- the mark builds itself out of the city ------------------------ */
+.gws-brand{position:relative;z-index:2;text-align:center;padding-top:clamp(28px,7vh,64px)}
+.gws-mark{width:clamp(76px,16vw,116px);height:auto;display:block;margin:0 auto;
+  clip-path:inset(100% 0 0 0);animation:gws-rise 1.5s cubic-bezier(.16,.84,.44,1) .55s both}
+@keyframes gws-rise{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+.gws-word{margin:14px 0 0;font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-weight:800;
+  font-size:clamp(26px,5.4vw,40px);line-height:1;letter-spacing:-.02em;color:#fff;
+  opacity:0;animation:gws-up .9s cubic-bezier(.22,.61,.36,1) 1.45s both}
+.gws-word span{color:#8fd3c9}
+.gws-sub{margin:9px 0 0;color:#cfe3de;font-size:clamp(13px,2.4vw,15px);
+  opacity:0;animation:gws-up .9s cubic-bezier(.22,.61,.36,1) 1.65s both}
+.gws-rule{width:54px;height:3px;border-radius:2px;background:#d9a653;margin:16px auto 0;
+  transform:scaleX(0);transform-origin:50% 50%;animation:gws-wide .8s cubic-bezier(.22,.61,.36,1) 1.85s both}
+@keyframes gws-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes gws-wide{to{transform:scaleX(1)}}
+
+/* --- the card ------------------------------------------------------ */
+.gws-card-in{opacity:0;animation:gws-up .9s cubic-bezier(.22,.61,.36,1) 1.1s both}
+
+/* --- the crest, quietly, at the foot ------------------------------- */
+.gws-foot{position:relative;z-index:2;text-align:center;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));
+  color:#a9c6c0;font-size:12px;opacity:0;animation:gws-up .9s ease-out 2.1s both}
+.gws-foot img{height:26px;width:auto;display:block;margin:0 auto 7px;opacity:.9}
+
+/* --- nothing moves for a reader who asked for that ------------------ */
+@media (prefers-reduced-motion:reduce){
+  .gws-sky,.gws-glow,.gws-mark,.gws-word,.gws-sub,.gws-rule,.gws-card-in,.gws-foot{animation:none!important}
+  .gws-sky{transform:none;filter:none}
+  .gws-glow{opacity:1;transform:translate(-50%,40%)}
+  .gws-mark{clip-path:none}
+  .gws-word,.gws-sub,.gws-card-in,.gws-foot{opacity:1;transform:none}
+  .gws-rule{transform:scaleX(1)}
+}
+/* a printed sign-in page should not carry a photograph */
+@media print{.gws-stage{display:none}}
+
+/* --- how it sits inside the portal's own sign-in screen -------------- */
+/* .login-wrap is already position:relative and clips, so the stage is
+   absolute inside it rather than fixed to the window: on a short phone the
+   card can then scroll over a picture that stays where it was put. */
+.login-wrap .gws-stage{position:absolute;z-index:0}
+.login-wrap > *:not(.gws-stage){position:relative;z-index:2}
+
+/* On a phone the card fills the width, so the picture was reduced to a hairline
+   frame. Give it a band of sky above the card — the skyline, not the water —
+   and let the card scroll up over it. */
+@media (max-width:860px){
+  .login-wrap{padding-top:96px}
+  .login-wrap .gws-sky{background-position:56% 72%}
+}
+
+
+/* 22 September (audit 2.2): the card is on the screen at once; only the sky takes its time */
+.gws-card-in{animation:gws-card .55s cubic-bezier(.22,.61,.36,1) 0s both}
+@keyframes gws-card{from{opacity:.45;transform:translateY(10px)}to{opacity:1;transform:none}}
+.gws-mark{clip-path:none;animation:gws-card .55s cubic-bezier(.22,.61,.36,1) 0s both}
+.gws-word,.gws-sub{opacity:1;animation:gws-card .6s cubic-bezier(.22,.61,.36,1) .1s both}
+@media (prefers-reduced-motion:reduce){.gws-card-in,.gws-mark,.gws-word,.gws-sub{animation:none}}

@@ -1,0 +1,1480 @@
+/* Greenwich Works — the portal.  One stylesheet, no framework. */
+:root{
+  --teal:#1e6b63; --teal-d:#14524b; --teal-l:#f2f7f6; --teal-e:#dbe9e6;
+  --ink:#1c1a17; --text:#241f1a; --text-2:#4d463d;
+  /* --text-3 was #8a8178, which is 3.4:1 on --stone and 3.7:1 on --paper. It
+     carries table headers, hints and card feet at 10-12px, so it has to clear
+     4.5:1 on the lightest ground it ever sits on and on the darkest. This tone
+     is the same warm grey, two steps down: 5.49:1 on --paper, 5.00:1 on
+     --stone, 4.9:1 on the --stone-warm card head. */
+  --text-3:#6f665c;
+  --paper:#fdfcfa; --stone:#f4f1ec; --rule:#e7e2d9; --rule-2:#d6cfc3;
+  /* The warm stone the printed papers use behind a section head, with its
+     small numbered chip. Checked at 4.9:1 for --text-3 and 8.1:1 for --text-2
+     sitting on it — both still clear AA. */
+  --stone-warm:#f1efe9;
+  --red:#9a4426; --red-l:#fbf4f1;
+  /* Bronze, from the papers' crane — this is the same tone as --amber, one
+     name for the one colour so a change to it only has to be made once. */
+  --amber:#b07d24; --amber-l:#fdf8ee; --bronze:#b07d24; --bronze-d:#8a5c21;
+  --green:#4d7a45; --green-l:#f2f7f1;
+  --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --serif:'Source Serif 4',Georgia,serif;
+  --shadow:0 1px 2px rgba(28,26,23,.05),0 8px 24px -12px rgba(28,26,23,.18);
+  --r:10px;
+  /* A teal ring alone is 6.1:1 on paper but only 2.8:1 on the ink topbar, so
+     the ring is drawn twice: a paper-coloured band against dark grounds, the
+     teal outline against light ones. One of the two always reads. */
+  --focus-halo:0 0 0 2px var(--paper);
+}
+
+/* ---------------------------------------------------------- bundled type
+   The new look matches the printed papers: heavy Archivo for headings and
+   labels, IBM Plex Mono for the small mono figures, Source Serif 4 for the
+   long-form explainer. All three were loaded from Google Fonts before; they
+   are files under assets/fonts/ now, the same family used to typeset the
+   papers themselves, so the sign-in screen — the first thing 956 students
+   see, some of them on a slow connection — has real type with no network
+   call at all, and the demo copy is fully offline. Missing a weight here
+   falls back to the next one up via font-weight matching, not to Helvetica. */
+@font-face{font-family:'Archivo';font-style:normal;font-weight:400;font-display:swap;
+  src:url('assets/fonts/archivo-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:500;font-display:swap;
+  src:url('assets/fonts/archivo-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:600;font-display:swap;
+  src:url('assets/fonts/archivo-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:700;font-display:swap;
+  src:url('assets/fonts/archivo-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:800;font-display:swap;
+  src:url('assets/fonts/archivo-latin-800-normal.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;
+  src:url('assets/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;
+  src:url('assets/fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:400;font-display:swap;
+  src:url('assets/fonts/source-serif-4-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:600;font-display:swap;
+  src:url('assets/fonts/source-serif-4-latin-600-normal.woff2') format('woff2')}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--stone);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--teal-d)}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.01em;font-family:var(--sans)}
+.mono{font-family:var(--mono)}
+
+/* ---------------------------------------------------------------- shell
+   The header is deliberately compact: the skyline-W mark and the programme
+   name, nothing else competing for the strip's height. The University's own
+   crest and wordmark are not dropped — they carry on in the footnote, on
+   every page — so the bar in view the whole time a reader works is the one
+   with the least to read. */
+.topbar{background:var(--ink);color:#fff;position:sticky;top:0;z-index:40}
+.topbar .in{max-width:1080px;margin:0 auto;padding:9px 18px;display:flex;align-items:center;gap:11px;min-width:0}
+.topbar img.gwmark{height:30px;width:auto;flex:none}
+.topbar .prog{font-family:var(--sans);font-weight:800;font-size:15px;letter-spacing:-.005em;
+  color:#fff;padding-left:1px;white-space:nowrap}
+/* The spacer takes the slack so the name block, not the row, is what gives
+   way when the bar runs out of width. */
+.topbar .sp{margin-left:auto;flex:1 1 0;min-width:0}
+.topbar .who{display:flex;flex-direction:column;align-items:flex-end;line-height:1.25;min-width:0}
+.topbar .who b{font-size:12.5px;font-weight:700}
+/* A long name truncates rather than pushing the two buttons off the screen. */
+.topbar .who b,.topbar .who span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Was .55 white, 6.0:1 on the ink bar. At 10.5px mono the roll number is the
+   smallest text on the darkest ground in the app, so it is held at 7:1. */
+.topbar .who span{font-family:var(--mono);font-size:10.5px;color:rgba(255,255,255,.68)}
+.topbar .out{display:inline-flex;align-items:center;background:none;border:1px solid rgba(255,255,255,.28);
+  color:#fff;border-radius:7px;padding:0 11px;min-height:40px;font-size:12px;cursor:pointer;flex:none;
+  white-space:nowrap;box-sizing:border-box}
+.topbar .out:hover{background:rgba(255,255,255,.1)}
+
+.nav{background:var(--paper);border-bottom:1px solid var(--rule);position:sticky;top:52px;z-index:30}
+.nav .in{max-width:1080px;margin:0 auto;padding:0 18px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav .in::-webkit-scrollbar{display:none}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 13px;font-size:13.5px;font-weight:600;
+  color:var(--text-2);text-decoration:none;border-bottom:2.5px solid transparent;white-space:nowrap;box-sizing:border-box}
+.nav a.on{color:var(--teal-d);border-bottom-color:var(--teal)}
+.nav a:hover{color:var(--teal-d)}
+.nav a .pip{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+  background:var(--red);color:#fff;border-radius:9px;font-size:10.5px;font-family:var(--mono);margin-left:5px;padding:0 4px}
+
+main{max-width:1080px;margin:0 auto;padding:20px 18px 64px}
+
+/* ---------------------------------------------------------------- bits */
+.page-h{margin:4px 0 18px}
+.page-h .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:6px}
+.page-h h1{font-size:26px;line-height:1.15}
+.page-h p{margin:6px 0 0;color:var(--text-2);font-size:14px;max-width:62ch}
+
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.card > .h{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--rule);background:var(--stone-warm)}
+.card > .h h3{font-size:14px}
+.card > .h .tag{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.card > .b{padding:16px}
+.card > .b.flush{padding:0}
+.card.accent{border-top:3px solid var(--teal)}
+
+.stat{background:var(--paper);border:1px solid var(--rule);border-top:3px solid var(--teal);border-radius:var(--r);padding:13px 15px}
+.stat .n{font-size:27px;font-weight:800;line-height:1;color:var(--teal-d);font-family:var(--sans)}
+.stat .l{font-size:11.5px;color:var(--text-2);margin-top:6px;line-height:1.35}
+.stat.r{border-top-color:var(--red)} .stat.r .n{color:var(--red)}
+.stat.a{border-top-color:var(--amber)} .stat.a .n{color:#8a5f16}
+.stat.g{border-top-color:var(--green)} .stat.g .n{color:#3a5c34}
+
+.kv{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px}
+.kv:last-child{border-bottom:0}
+.kv .k{width:130px;flex:none;color:var(--text-3);font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding-top:1px}
+.kv .v{color:var(--text);font-weight:500}
+
+/* The papers set a status tag in small spaced capitals, but a pill here can
+   carry a full phrase ("no Folio filed yet", "3 of 20 lost, late") rather
+   than one word — spaced capitals on a sentence is a shout, not a label, and
+   two-line-wraps inside a pill. Sentence case, bold, stays the family the
+   headings use. */
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:3px 10px;font-size:11.5px;
+  font-weight:700;letter-spacing:.01em;font-family:var(--sans)}
+.pill.ok{background:var(--green-l);color:#3a5c34;border:1px solid #cfe0cb}
+.pill.due{background:var(--amber-l);color:#8a5f16;border:1px solid #ecdcbc}
+.pill.late{background:var(--red-l);color:var(--red);border:1px solid #eccfc2}
+.pill.none{background:var(--stone);color:var(--text-3);border:1px solid var(--rule-2)}
+.pill.info{background:var(--teal-l);color:var(--teal-d);border:1px solid var(--teal-e)}
+
+/* min-height rather than more padding, so the label stays the size it was
+   designed at and the box just gets tall enough to tap on a phone in
+   daylight. .sm keeps its own, smaller floor — it is the variant used for
+   rows of actions inside a dense table or a hand-in card, where forcing 44px
+   on every one of them would blow the row heights out. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--teal);color:#fff;
+  border:0;border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:700;cursor:pointer;
+  min-height:44px}
+.btn:hover{background:var(--teal-d)}
+.btn:disabled{background:var(--rule-2);color:#fff;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--teal-d);border:1px solid var(--rule-2)}
+.btn.ghost:hover{background:var(--teal-l)}
+.btn.danger{background:var(--red)} .btn.danger:hover{background:#7d3720}
+.btn.sm{padding:6px 11px;font-size:12px;border-radius:7px;min-height:36px}
+.btn.wide{width:100%}
+
+/* ------------------------------------------------------------ keyboard focus
+   Nothing in the app showed where the keyboard was: the modal, the walkthrough
+   and the turning cards were reachable by tab and invisible once reached. One
+   ring, everywhere, drawn twice — a teal outline that reads on paper and a
+   paper-coloured band inside it that reads on the ink topbar, the dark modal
+   scrim, the hero and the back of a turned card. :focus-visible, so a mouse
+   click on a button does not light it up. */
+a:focus-visible,button:focus-visible,summary:focus-visible,
+[tabindex]:focus-visible,[role=button]:focus-visible{
+  outline:2px solid var(--teal);outline-offset:2px;box-shadow:var(--focus-halo)}
+/* Controls that live inside an overflow box would have the ring clipped at the
+   edge of it, so theirs is drawn inside their own border instead. */
+.nav a:focus-visible,.daystrip button:focus-visible,.login .tabs button:focus-visible,
+.slot:focus-visible,.scroll button:focus-visible,.scroll a:focus-visible{
+  outline-offset:-3px;box-shadow:none}
+/* The forward face of a card is a hover-only affordance. Focus has to do the
+   same thing or the back of the card is keyboard-unreachable — the flip below
+   is already bound to :focus-visible, this makes the focused card visible
+   while it is turned. */
+.dcard:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:var(--r)}
+.dcard:focus-visible .face .turn{opacity:1}
+
+label.f{display:block;margin-bottom:12px}
+label.f span{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);
+  margin-bottom:5px;font-weight:700}
+input[type=text],input[type=password],input[type=file],select,textarea{
+  width:100%;max-width:100%;min-width:0;min-height:44px;background:#fff;border:1px solid var(--rule-2);
+  border-radius:8px;padding:10px 12px;font-size:14px}
+/* Was a --teal-e outline, 1.1:1 against paper — visible only as a faint blur.
+   The teal outline is 6.1:1, so where the field is is never in doubt. */
+input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+textarea{min-height:84px;resize:vertical;font-family:inherit}
+.hint{font-size:12px;color:var(--text-3);margin-top:5px;line-height:1.4}
+
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+/* No position:sticky here. Most tables in the app are not inside a .scroll
+   box, and a header stuck to top:0 then floats up the page under the nav —
+   which is itself sticky at 52px — and hangs over whatever section the reader
+   has scrolled to. A header only sticks when it has its own scroll box to
+   stick inside, so the rule moved to .scroll below. */
+table.t th{background:var(--stone);text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-3);padding:9px 14px;border-bottom:1px solid var(--rule-2);font-weight:700}
+table.t td{padding:9px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t tr:hover td{background:#fbfaf7}
+table.t td.n{font-family:var(--mono);white-space:nowrap}
+.scroll{overflow:auto;max-height:70vh}
+.scroll table.t th,.scroll table.gates th{position:sticky;top:0;z-index:2}
+
+.msg{border-radius:8px;padding:11px 14px;font-size:13.5px;line-height:1.45;margin-bottom:14px;
+  animation:msg-in .22s ease both}
+@keyframes msg-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.msg.err{background:var(--red-l);color:var(--red);border:1px solid #eccfc2}
+.msg.ok{background:var(--green-l);color:#3a5c34;border:1px solid #cfe0cb}
+.msg.note{background:var(--teal-l);color:var(--teal-d);border-left:3px solid var(--teal)}
+.msg.warn{background:var(--amber-l);color:#8a5f16;border-left:3px solid var(--amber)}
+
+/* A quiet placeholder rather than a blank patch of card: a dashed stone box
+   reads as "nothing here yet, and that's expected" rather than as a loading
+   failure. It never gets a border-radius fight with its parent — most empty
+   states sit inside a .card > .b, which already has its own corners. */
+.empty{text-align:center;padding:34px 20px;color:var(--text-3);font-size:13.5px;
+  background:var(--stone);border:1px dashed var(--rule-2);border-radius:var(--r)}
+
+/* ---------------------------------------------------------------- login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:linear-gradient(160deg,#1c1a17 0%,#14524b 55%,#1e6b63 100%)}
+.login{width:100%;max-width:430px;background:var(--paper);border-radius:14px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5);overflow:hidden}
+/* This is the first screen 956 students see, so the Works mark leads: it is
+   the biggest thing in the card, set before the heading it illustrates.
+   The University's crest and wordmark are not dropped — they still say whose
+   pilot this is — but they come after, smaller, below a rule, as the
+   secondary line the masthead on the papers makes them. */
+.login .top{padding:28px 28px 20px;text-align:center;border-bottom:1px solid var(--rule)}
+.login .top img.gwmark{height:56px;width:auto;margin-bottom:12px}
+.login .top h1{font-size:21px;color:var(--teal-d)}
+.login .top p{margin:5px 0 0;font-size:13px;color:var(--text-2)}
+.login .top .lock{display:flex;align-items:center;justify-content:center;gap:10px;
+  margin:18px 0 0;padding-top:14px;border-top:1px solid var(--rule)}
+.login .top .lock img.crest{height:28px;opacity:.86}
+.login .top .lock .r{width:1px;height:20px;background:var(--rule-2)}
+.login .top .lock img.word{height:14px;opacity:.86}
+.login .tabs{display:flex;border-bottom:1px solid var(--rule)}
+.login .tabs button{flex:1;background:none;border:0;padding:13px 8px;font-size:13px;font-weight:700;
+  color:var(--text-3);cursor:pointer;border-bottom:2.5px solid transparent}
+.login .tabs button.on{color:var(--teal-d);border-bottom-color:var(--teal);background:var(--teal-l)}
+.login .body{padding:22px 28px 26px}
+.login .foot{padding:0 28px 22px;font-size:11.5px;color:var(--text-3);line-height:1.45;text-align:center}
+.step{display:flex;gap:7px;margin-bottom:16px}
+.step i{flex:1;height:3px;border-radius:2px;background:var(--rule-2);font-style:normal}
+.step i.on{background:var(--teal)}
+
+/* ---------------------------------------------------------------- handins */
+.hi{display:grid;grid-template-columns:5px 1fr;border-bottom:1px solid var(--rule)}
+.hi:last-child{border-bottom:0}
+.hi .bar{background:var(--rule-2)}
+.hi.ok .bar{background:var(--green)} .hi.due .bar{background:var(--amber)} .hi.late .bar{background:var(--red)}
+/* The 5px spine is a colour and nothing else. Three textures give it a second
+   reading: solid filed, rungs due, diagonals late. Set as background-image so
+   the background shorthand above still supplies the colour. */
+.hi.due .bar{background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.85) 0 3px,transparent 3px 8px)}
+.hi.late .bar{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.85) 0 2px,transparent 2px 6px)}
+.hi .in{padding:14px 16px}
+.hi .t{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hi .t b{font-size:14.5px}
+.hi .t .when{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--text-3)}
+.hi .blurb{font-size:13px;color:var(--text-2);margin:5px 0 0;line-height:1.45}
+.hi .filed{font-size:12px;color:var(--text-3);margin-top:7px;font-family:var(--mono)}
+.hi .act{margin-top:11px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+
+/* ---------------------------------------------------------------- diary */
+.daystrip{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:thin}
+.daystrip button{flex:none;min-width:66px;background:var(--paper);border:1px solid var(--rule-2);border-radius:9px;
+  padding:8px 6px;cursor:pointer;text-align:center;line-height:1.25}
+.daystrip button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.daystrip button.full{opacity:.45}
+.daystrip .d{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+.daystrip button.on .d{color:rgba(255,255,255,.75)}
+.daystrip .n{font-size:17px;font-weight:800}
+.daystrip .f{font-size:9.5px;font-family:var(--mono);color:var(--text-3)}
+.daystrip button.on .f{color:rgba(255,255,255,.75)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:7px}
+.slot{display:flex;align-items:center;justify-content:center;min-height:44px;background:var(--paper);
+  border:1px solid var(--rule-2);border-radius:8px;padding:9px 4px;font-family:var(--mono);
+  font-size:12.5px;cursor:pointer;text-align:center;box-sizing:border-box}
+.slot:hover:not(:disabled){border-color:var(--teal);background:var(--teal-l)}
+.slot:disabled{background:var(--stone);color:var(--text-3);cursor:not-allowed;border-style:dashed}
+.slot.mine{background:var(--teal);border-color:var(--teal);color:#fff;cursor:default}
+
+/* ---------------------------------------------------------------- gates */
+.gates{border-collapse:separate;border-spacing:0;font-size:12px;width:100%}
+.gates th{background:var(--stone);padding:8px 6px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--text-3);border-bottom:1px solid var(--rule-2);text-align:center;white-space:nowrap}
+.gates th.l{text-align:left;padding-left:14px}
+.gates td{padding:5px 6px;border-bottom:1px solid var(--rule);text-align:center}
+.gates td.l{text-align:left;padding-left:14px;font-family:var(--mono);font-size:11.5px}
+.cell{display:inline-block;width:20px;height:20px;border-radius:5px;background:var(--stone);
+  border:1px solid var(--rule-2);position:relative}
+.cell.ok{background:var(--green);border-color:var(--green)}
+.cell.due{background:var(--amber);border-color:var(--amber)}
+.cell.late{background:var(--red);border-color:var(--red)}
+.cell.na{background:transparent;border-style:dashed;opacity:.55}
+
+/* ------------------------------------------------- the marks inside a cell
+   Green, amber and red on their own are the whole signal in this grid, and a
+   reader who cannot separate them sees twenty identical squares. So every
+   state also carries a drawn shape: tick filed, ring due, slash late, dash
+   not applicable, nothing at all not yet due. The cells are 20px, so these
+   are borders and gradients rather than text — a glyph at that size sits on
+   the baseline and reads as dirt.
+
+   One vocabulary, four shapes, used by the gates grid, the gates key, the
+   block strip and every chart legend, so a shape means the same thing
+   wherever it appears. --mk is the ink of the mark: white on a dark fill,
+   teal on a pale one. The marks are sized in pixels, not percentages: a
+   .strip cell can be two hundred pixels wide and a percentage tick turns
+   into a stripe across it. */
+.cell,.gates-key i,.strip td.c,.legend i{--mk:#fff}
+.cell::after,.gates-key i::after,.strip td.c::after,.legend i::after{
+  content:'';position:absolute;pointer-events:none;display:none}
+
+/* tick — filed, done, all of them */
+.cell.ok::after,.gates-key i.ok::after,.legend i.ok::after,
+.strip td.c[data-l="3"]::after,.legend i.l3::after{
+  display:block;left:50%;top:50%;width:4px;height:8px;
+  border:solid var(--mk);border-width:0 2px 2px 0;transform:translate(-50%,-60%) rotate(42deg)}
+/* ring — due, some of them */
+.cell.due::after,.gates-key i.due::after,.legend i.due::after,
+.strip td.c[data-l="1"]::after,.legend i.l1::after{
+  display:block;left:50%;top:50%;width:9px;height:9px;transform:translate(-50%,-50%);
+  border:2px solid var(--mk);border-radius:50%}
+/* slash — late, over the line */
+.cell.late::after,.gates-key i.late::after,.legend i.late::after{
+  display:block;left:50%;top:50%;width:2px;height:13px;
+  background:var(--mk);transform:translate(-50%,-50%) rotate(45deg)}
+/* hatch — most of them, and any over-threshold fill. Held at half opacity so
+   the four strip steps still read as a ramp: a full-strength white hatch over
+   teal comes out lighter than the step below it and the ramp goes backwards. */
+.strip td.c[data-l="2"]::after,.legend i.l2::after{
+  display:block;inset:0;border-radius:inherit;opacity:.5;
+  background-image:repeating-linear-gradient(45deg,var(--mk) 0 1.5px,transparent 1.5px 5px)}
+/* dash — does not apply to this team */
+.cell.na::after,.gates-key i.na::after,.legend i.na::after{
+  display:block;left:50%;top:50%;width:9px;height:2px;
+  transform:translate(-50%,-50%);background:var(--rule-2)}
+
+/* ------------------------------------------------------------- gates key
+   The grid is unreadable without it, so the key is part of the grid, not a
+   footnote somewhere else on the page. Sits directly under the .scroll box
+   inside the flush card body, hence its own padding. */
+.gates-key{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;
+  padding:11px 14px;border-top:1px solid var(--rule);font-size:11.5px;color:var(--text-2)}
+.gates-key span{display:inline-flex;align-items:center;gap:7px}
+.gates-key i{flex:none;position:relative;width:16px;height:16px;border-radius:4px;font-style:normal;
+  background:var(--stone);border:1px solid var(--rule-2)}
+.gates-key label{cursor:default}
+.gates-key i.ok{background:var(--green);border-color:var(--green)}
+.gates-key i.due{background:var(--amber);border-color:var(--amber)}
+.gates-key i.late{background:var(--red);border-color:var(--red)}
+.gates-key i.na{background:transparent;border-style:dashed}
+
+.modal-bg{position:fixed;inset:0;background:rgba(20,18,16,.55);display:flex;align-items:center;justify-content:center;
+  padding:20px;z-index:80}
+.modal{background:var(--paper);border-radius:12px;max-width:460px;width:100%;box-shadow:0 30px 60px -20px rgba(0,0,0,.5);overflow:hidden}
+.modal .h{padding:15px 20px;border-bottom:1px solid var(--rule);background:var(--stone-warm);display:flex;align-items:center}
+.modal .h h3{font-size:15px} .modal .h button{margin-left:auto;background:none;border:0;font-size:19px;cursor:pointer;color:var(--text-3)}
+.modal .b{padding:20px}
+.modal .f{padding:0 20px 20px;display:flex;gap:9px;justify-content:flex-end}
+
+.banner{background:var(--amber-l);border-bottom:1px solid #ecdcbc;color:#8a5f16;font-size:12.5px;
+  padding:7px 18px;text-align:center;font-weight:600}
+.footnote{margin-top:26px;padding-top:14px;border-top:1px solid var(--rule);font-size:11.5px;color:var(--text-3);
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.footnote img{height:26px;width:auto;opacity:.8}
+/* The University's own crest and wordmark carry on here, on every page —
+   the header above is the Works mark alone, compact on purpose, so this is
+   where the parent institution's identity still shows. The wordmark alone
+   carries the University red; nowhere else in the app does. */
+.footnote img.crest{height:22px}
+.footnote img.word{height:13px}
+
+/* ---------------------------------------------------------------- phone */
+@media (max-width:560px){
+  .topbar .in{gap:8px;padding:9px 14px}
+  .topbar img.gwmark{height:24px}
+  .topbar .prog{font-size:13px}
+  .topbar .who b{font-size:11.5px}
+  .topbar .out{padding:0 10px;font-size:11.5px;white-space:nowrap;min-height:36px}
+  .nav{top:47px}
+  .nav a{padding:13px 10px;font-size:13px}
+  main{padding:16px 14px 52px}
+  .page-h h1{font-size:22px}
+  .page-h p{font-size:13.5px}
+  .stat .n{font-size:24px}
+  .card > .b{padding:14px}
+  .kv{flex-direction:column;gap:2px}
+  .kv .k{width:auto}
+  .footnote{flex-direction:column;align-items:flex-start;gap:7px}
+  .footnote span:last-child{margin-left:0 !important}
+  .slots{grid-template-columns:repeat(auto-fill,minmax(74px,1fr))}
+  .hi .act{flex-direction:column;align-items:stretch}
+  .hi .act .btn{width:100%}
+  .modal .f{flex-direction:column-reverse}
+  .modal .f .btn{width:100%}
+}
+
+/* At 390px the bar used to carry a crest, a rule, a wordmark, a programme
+   label, a name, a roll number and two buttons on one nowrap line, and the
+   last button went off the right edge. The new mark-and-name header is much
+   lighter and "Greenwich Works" now holds at 390px (a 360px Android phone in
+   portrait, the narrowest this app promises to work on); below that a long
+   name or role still needs somewhere to give, and the two buttons are the
+   only way out of the app, so the programme name goes first and the name
+   block is what shrinks next. */
+@media (max-width:374px){
+  .topbar .prog{display:none}
+}
+@media (max-width:430px){
+  .topbar .in{gap:7px;padding:9px 12px}
+  .topbar img.gwmark{height:22px}
+  .topbar .prog{font-size:12px}
+  .topbar .who{max-width:38vw}
+  .topbar .out{padding:0 8px;min-height:36px;font-size:11px}
+}
+
+/* A file input reports the chosen filename inside itself and will happily grow
+   to fit forty characters of it, taking the row and the page with it. It is
+   allowed to shrink and is capped at the row width. */
+.hi .act input[type=file]{width:auto;flex:0 1 auto;min-width:0;max-width:100%;overflow:hidden;
+  background:transparent;border:0;padding:0;font-size:12.5px}
+.hi .act input[type=text]{flex:1 1 200px;min-width:160px;padding:8px 11px;font-size:13px}
+@media (max-width:560px){ .hi .act input[type=text]{flex:1 1 100%} }
+
+/* ---------------------------------------------------------------- marking */
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px;margin-bottom:18px}
+.cbtn{text-align:left;background:var(--paper);border:1px solid var(--rule);border-top:3px solid var(--rule-2);
+  border-radius:var(--r);padding:12px 14px;cursor:pointer;box-shadow:var(--shadow)}
+.cbtn:hover{border-color:var(--teal);border-top-color:var(--teal)}
+.cbtn.on{border-top-color:var(--teal);background:var(--teal-l);border-color:var(--teal-e)}
+.cbtn .cc{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--teal-d)}
+.cbtn .ct{font-size:12.5px;color:var(--text-2);margin:3px 0 9px;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cbtn .cp{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.cbtn .bar{flex:1;height:5px;background:var(--rule);border-radius:99px;overflow:hidden}
+.cbtn .bar i{display:block;height:100%;background:var(--teal);border-radius:99px}
+
+.rubkey{display:grid;grid-template-columns:repeat(5,1fr);gap:0;font-size:11.5px;
+  border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-bottom:14px;background:var(--paper)}
+.rubkey div{padding:9px 12px;border-right:1px solid var(--rule)}
+.rubkey div:last-child{border-right:0}
+.rubkey b{display:block;font-size:12.5px;color:var(--text)}
+.rubkey span{color:var(--text-3);display:block;margin-top:2px;line-height:1.35}
+.rubkey em{font-style:normal;font-family:var(--mono);color:var(--teal-d);font-weight:600}
+@media(max-width:820px){.rubkey{grid-template-columns:repeat(2,1fr)}}
+
+.team-mark{margin-bottom:14px}
+.team-mark .hd{display:flex;align-items:center;gap:10px 8px;flex-wrap:wrap;padding:11px 16px;
+  background:var(--stone-warm);border-bottom:1px solid var(--rule)}
+.team-mark .hd .tid{font-family:var(--mono);font-weight:600;font-size:14px;color:var(--teal-d)}
+.team-mark .hd .blk{font-size:12.5px;color:var(--text-2)}
+.team-mark .hd .st{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+/* A team header can carry the id, the block name, a "no Folio yet" pill, a
+   late-penalty pill and a submitted/not-submitted pill all at once — five
+   things that do not all fit one line on a phone. Rather than let a pill's
+   own text wrap into two lines (which happened once .pill went from a single
+   word to a full phrase in places), the whole status group drops to a line
+   of its own and wraps there instead. */
+@media(max-width:560px){
+  .team-mark .hd .st{margin-left:0;flex-basis:100%;justify-content:flex-start}
+}
+.rub{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:9px;align-items:end;
+  padding:14px 16px;border-bottom:1px solid var(--rule);background:#fdfcfa}
+.rub label{display:block;margin:0}
+.rub label span{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text-3);margin-bottom:4px;font-weight:700}
+.rub input{width:100%;text-align:center;font-family:var(--mono);font-weight:600;padding:8px 4px}
+.rub .tot{font-family:var(--sans);font-weight:800;font-size:19px;color:var(--teal-d);
+  white-space:nowrap;padding-bottom:7px}
+.rub .tot em{font-style:normal;font-size:12px;color:var(--text-3);font-weight:600}
+@media(max-width:820px){.rub{grid-template-columns:repeat(3,1fr)}.rub .tot{grid-column:1/-1;text-align:right}}
+
+.mrow{display:grid;grid-template-columns:1fr 78px 78px 78px 58px;gap:9px;align-items:center;
+  padding:9px 16px;border-bottom:1px solid var(--rule)}
+.mrow.head{background:var(--stone);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text-3);font-weight:700;padding:7px 16px}
+.mrow .who b{font-size:13.5px;display:block}
+.mrow .who span{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.mrow input{text-align:center;font-family:var(--mono);font-weight:600;padding:7px 4px}
+.mrow .t40{font-family:var(--sans);font-weight:800;font-size:15px;text-align:right;color:var(--text)}
+@media(max-width:820px){
+  .mrow{grid-template-columns:1fr 1fr 1fr;row-gap:10px}
+  .mrow .who{grid-column:1/-1}
+  .mrow.head{display:none}
+  .mrow input{width:100%}
+  .mrow .t40{grid-column:1/-1;text-align:left}
+  /* The head row is hidden at this width, which left three bare number boxes
+     with nothing to say which of them is the adjustment, the viva or the
+     participation. Each cell carries its own label instead.
+
+     THE MARKUP MUST SET data-label ON THOSE CELLS, and it must be a wrapper
+     element around the input, not the input itself — an input is a replaced
+     element and has no ::before to hang the label on. So:
+       <div data-label="Viva /10"><input ...></div>
+     with the same wording as the .mrow.head cell it replaces. The same rule
+     covers td[data-label] for any table that hides its header row. */
+  .mrow [data-label]{display:block;min-width:0}
+  .mrow [data-label]::before,table.t td[data-label]::before{
+    content:attr(data-label);display:block;font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);margin-bottom:3px}
+  .mrow .t40[data-label]{display:flex;align-items:baseline;gap:8px}
+  .mrow .t40[data-label]::before{margin:0}
+}
+.mark-foot{display:flex;gap:9px;align-items:center;padding:12px 16px;flex-wrap:wrap}
+.mark-foot .sp{margin-left:auto;font-size:12px;color:var(--text-3)}
+
+/* ================================================================
+   THE MOVING GROUND, THE DASHBOARDS AND THE EXPLAINER
+   Added 10 September 2026. Everything below is additive: nothing
+   above this line was changed, so the screens that already worked
+   still look exactly as they did.
+   ================================================================ */
+
+/* ---------------------------------------------------------------- canvas */
+canvas.bgc{position:absolute !important;inset:0;width:100%;height:100%;display:block;
+  z-index:0;pointer-events:none;border-radius:inherit}
+
+/* ---------------------------------------------------------------- sign-in */
+.login-wrap{position:relative;overflow:hidden;padding:32px 24px}
+.login-wrap > *:not(.bgc){position:relative;z-index:1}
+.login-split{display:flex;align-items:center;justify-content:center;gap:48px;
+  width:100%;max-width:1020px;margin:0 auto}
+.login-split .login{flex:none}
+.login-tell{flex:1;max-width:440px;color:#e9f2f0}
+.login-tell .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(160,222,211,.9);margin-bottom:10px}
+.login-tell h2{font-size:28px;line-height:1.18;color:#fff;letter-spacing:-.02em;margin-bottom:12px}
+.login-tell p{margin:0 0 16px;font-size:14.5px;line-height:1.6;color:rgba(233,242,240,.82);max-width:46ch}
+.login-tell .beats{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px}
+.login-tell .beats li{display:flex;gap:11px;align-items:flex-start;font-size:13.5px;line-height:1.5;
+  color:rgba(233,242,240,.9);opacity:0;transform:translateY(8px);
+  animation:rise .55s cubic-bezier(.22,.8,.3,1) forwards}
+.login-tell .beats li:nth-child(1){animation-delay:.10s}
+.login-tell .beats li:nth-child(2){animation-delay:.20s}
+.login-tell .beats li:nth-child(3){animation-delay:.30s}
+.login-tell .beats li:nth-child(4){animation-delay:.40s}
+/* The small numbered chip the papers set beside a section head — solid teal
+   there, on white; here it sits on the teal gradient itself, so it is drawn
+   the other way round, a pale fill with a teal-tinted number, and the digit
+   is set in the same heavy grotesque as a paper's chip rather than mono. */
+.login-tell .beats b{display:flex;align-items:center;justify-content:center;flex:none;
+  width:24px;height:24px;border-radius:6px;background:rgba(233,242,240,.94);
+  border:1px solid rgba(120,205,192,.5);color:var(--teal-d);font-family:var(--sans);
+  font-weight:800;font-size:12px}
+.login-tell .who-for{margin-top:22px;padding-top:18px;border-top:1px solid rgba(233,242,240,.16);
+  font-size:12.5px;color:rgba(233,242,240,.62);line-height:1.55}
+.login .top{position:relative;overflow:hidden}
+@keyframes rise{to{opacity:1;transform:none}}
+.login{animation:rise .5s cubic-bezier(.22,.8,.3,1) both}
+@media(max-width:900px){
+  .login-split{flex-direction:column;gap:26px}
+  .login-tell{max-width:430px;order:2;text-align:left}
+  .login-tell h2{font-size:22px}
+}
+
+/* ---------------------------------------------------------------- hero band */
+.hero{position:relative;overflow:hidden;background:linear-gradient(150deg,#16302d 0%,#14524b 62%,#1e6b63 100%);
+  border-radius:14px;color:#fff;margin:2px 0 18px;box-shadow:0 18px 40px -26px rgba(20,82,75,.9)}
+.hero .in{position:relative;z-index:1;padding:26px 26px 24px;display:flex;gap:26px;align-items:flex-end;flex-wrap:wrap}
+.hero .lede{flex:1;min-width:260px}
+.hero .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(160,222,211,.92);margin-bottom:8px}
+.hero h1{font-size:29px;line-height:1.12;letter-spacing:-.02em;color:#fff}
+.hero p{margin:9px 0 0;font-size:14px;line-height:1.55;color:rgba(233,242,240,.84);max-width:60ch}
+.hero .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hero .chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.20);border-radius:99px;padding:5px 12px;font-size:12px;
+  color:rgba(255,255,255,.92);backdrop-filter:blur(3px)}
+.hero .chip b{font-family:var(--mono);font-size:12px;color:#a0ded3}
+.hero .chip.warn{background:rgba(214,142,52,.20);border-color:rgba(240,190,120,.42)}
+.hero .chip.warn b{color:#f4d5a4}
+.hero .chip.bad{background:rgba(200,90,60,.22);border-color:rgba(240,160,140,.42)}
+.hero .chip.bad b{color:#f6c6b6}
+.hero .cta{display:flex;gap:9px;flex-wrap:wrap}
+.hero .cta a,.hero .cta button{display:inline-flex;align-items:center;gap:7px;border-radius:9px;
+  padding:10px 16px;font-size:13.5px;font-weight:700;text-decoration:none;cursor:pointer;
+  border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);color:#fff;
+  transition:background .16s ease,transform .16s ease}
+.hero .cta a:hover,.hero .cta button:hover{background:rgba(255,255,255,.20);transform:translateY(-1px)}
+.hero .cta a.solid{background:#fff;color:var(--teal-d);border-color:#fff}
+.hero .cta a.solid:hover{background:#eef7f5}
+@media(max-width:700px){.hero h1{font-size:23px}.hero .in{padding:20px 18px}}
+
+/* ------------------------------------------------------- the turning cards */
+.deck{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(248px,1fr))}
+/* The back face sits in normal flow and so sets the height of the card; the
+   front is laid over it. That way the card is always tall enough for the
+   longer of the two texts, and nothing is ever cut off at the fold. */
+.dcard{position:relative;border:0;padding:0;background:none;text-align:left;cursor:pointer;
+  perspective:1100px;font:inherit;color:inherit}
+.dcard .faces{position:relative;width:100%;height:100%;
+  transition:transform .55s cubic-bezier(.3,.85,.35,1);transform-style:preserve-3d}
+.dcard:hover .faces,.dcard:focus-visible .faces,.dcard.flip .faces{transform:rotateY(180deg)}
+.dcard .face{display:flex;flex-direction:column;gap:8px;min-height:126px;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden;
+  border:1px solid var(--rule);border-radius:var(--r);padding:15px 16px;background:var(--paper);
+  box-shadow:var(--shadow);overflow:hidden}
+.dcard .face:not(.back){position:absolute;inset:0}
+.dcard .face.back{position:relative;transform:rotateY(180deg);background:#0f2c29;
+  border-color:#0f2c29;color:#e9f2f0}
+.dcard .face .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.dcard .face.back .k{color:#7fcdc0}
+.dcard .face h4{font-size:15px;line-height:1.28;letter-spacing:-.01em}
+.dcard .face.back h4{color:#fff;font-size:13px}
+.dcard .face p{margin:0;font-size:12.8px;line-height:1.5;color:var(--text-2)}
+.dcard .face.back p{color:rgba(233,242,240,.86);font-size:12.5px}
+.dcard .face .foot{margin-top:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text-3)}
+.dcard .face.back .foot{color:rgba(160,222,211,.75)}
+.dcard .face .turn{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--teal);opacity:.7}
+.dcard .face.back .turn{color:#7fcdc0}
+.dcard.must .face{border-top:3px solid var(--amber)}
+.dcard.must .face .k{color:#8a5f16}
+.dcard.must.over .face{border-top-color:var(--red)}
+.dcard.must.over .face .k{color:var(--red)}
+.dcard.done .face{border-top:3px solid var(--green)}
+.dcard.done .face .k{color:#3a5c34}
+.dcard .face.back{border-top-color:#0f2c29 !important}
+.dcard .when{font-family:var(--mono);font-size:11px;color:var(--text-2)}
+.dcard.over .when{color:var(--red);font-weight:700}
+
+/* --------------------------------------------------------------- to-do row */
+.todo{display:grid;gap:10px}
+.todo .row{display:flex;gap:13px;align-items:flex-start;background:var(--paper);border:1px solid var(--rule);
+  border-left:3px solid var(--rule-2);border-radius:var(--r);padding:12px 15px;
+  transition:transform .16s ease,box-shadow .16s ease}
+.todo .row:hover{transform:translateX(2px);box-shadow:var(--shadow)}
+.todo .row.now{border-left-color:var(--amber)}
+.todo .row.over{border-left-color:var(--red)}
+.todo .row.ok{border-left-color:var(--green);opacity:.72}
+.todo .row .tick{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--rule-2);
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;margin-top:1px}
+.todo .row.ok .tick{background:var(--green);border-color:var(--green)}
+.todo .row.now .tick{border-color:var(--amber)}
+.todo .row.over .tick{border-color:var(--red)}
+.todo .row .txt{flex:1;min-width:0}
+.todo .row .txt b{display:block;font-size:13.5px;font-weight:700;line-height:1.3}
+.todo .row .txt span{display:block;font-size:12.5px;color:var(--text-2);margin-top:3px;line-height:1.45}
+.todo .row .by{flex:none;text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--text-3);
+  line-height:1.35;max-width:170px}
+.todo .row.over .by{color:var(--red)}
+/* On a phone the date takes its own line. Without the explicit basis the
+   text column shrinks to one word per line instead of wrapping. */
+@media(max-width:620px){
+  .todo .row{flex-wrap:wrap}
+  .todo .row .txt{flex:1 1 150px}
+  .todo .row .by{flex:1 0 100%;order:3;text-align:left;margin:6px 0 0 35px;max-width:none}
+  .todo .row .by > div{display:inline;margin:0 0 0 8px !important}
+}
+
+/* ------------------------------------------------------------- the explainer */
+.guide-nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.guide-nav button{display:inline-flex;align-items:center;min-height:40px;background:var(--paper);
+  border:1px solid var(--rule-2);border-radius:99px;padding:0 14px;
+  font-size:12.5px;font-weight:700;color:var(--text-2);cursor:pointer;transition:all .15s ease}
+.guide-nav button:hover{border-color:var(--teal);color:var(--teal-d)}
+.guide-nav button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.prose{font-family:var(--serif);font-size:16px;line-height:1.62;color:var(--text)}
+.prose p{margin:0 0 14px;max-width:70ch}
+.prose p:last-child{margin-bottom:0}
+.prose p.first::first-letter{float:left;font-size:52px;line-height:.86;font-weight:600;
+  padding:4px 9px 0 0;color:var(--teal-d)}
+.vocab{display:grid;gap:0}
+.vocab .t{padding:13px 0;border-bottom:1px solid var(--rule)}
+.vocab .t:last-child{border-bottom:0}
+.vocab .t dt{font-size:14px;font-weight:800;color:var(--teal-d);margin:0 0 4px}
+.vocab .t dd{margin:0;font-size:13.5px;line-height:1.55;color:var(--text-2);max-width:74ch}
+.mk{display:grid;gap:0}
+.mk .r{display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--rule)}
+.mk .r:last-child{border-bottom:0}
+.mk .r .m{flex:none;width:52px;height:52px;border-radius:10px;background:var(--teal-l);border:1px solid var(--teal-e);
+  display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--teal-d)}
+.mk .r .d b{display:block;font-size:14px}
+.mk .r .d i{display:block;font-style:normal;font-family:var(--mono);font-size:11px;color:var(--text-3);margin:2px 0 5px}
+.mk .r .d p{margin:0;font-size:13px;line-height:1.5;color:var(--text-2)}
+.mbar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-bottom:18px;
+  border:1px solid var(--rule-2)}
+.mbar i{display:block;height:100%;font-style:normal;position:relative}
+.mbar-k{display:flex;flex-wrap:wrap;gap:10px 16px;margin:-8px 0 18px;font-size:11.5px;color:var(--text-2)}
+.mbar-k span{display:inline-flex;align-items:center;gap:6px}
+.mbar-k i{width:10px;height:10px;border-radius:3px;font-style:normal;display:inline-block;position:relative}
+/* The five segments are told apart by hue alone, and the key repeats the same
+   five hues, so neither helps a reader who cannot separate them. Each segment
+   gets a texture and the key repeats the texture in the same order, which is
+   what makes the key a key. The colours arrive as inline styles from guide.js,
+   so the texture has to live on a pseudo-element or the shorthand wipes it. */
+.mbar i::after,.mbar-k i::after{content:'';position:absolute;inset:0;border-radius:inherit;
+  background-image:var(--pat,none);opacity:.6;pointer-events:none}
+.mbar i:nth-child(1),.mbar-k span:nth-child(1) i{--pat:none}
+.mbar i:nth-child(2),.mbar-k span:nth-child(2) i{
+  --pat:repeating-linear-gradient(45deg,#fff 0 1.5px,transparent 1.5px 5px)}
+.mbar i:nth-child(3),.mbar-k span:nth-child(3) i{
+  --pat:repeating-linear-gradient(-45deg,#fff 0 1.5px,transparent 1.5px 5px)}
+.mbar i:nth-child(4),.mbar-k span:nth-child(4) i{
+  --pat:repeating-linear-gradient(0deg,#fff 0 1.5px,transparent 1.5px 5px)}
+.mbar i:nth-child(5),.mbar-k span:nth-child(5) i{
+  --pat:repeating-linear-gradient(45deg,#fff 0 1px,transparent 1px 4px),
+        repeating-linear-gradient(-45deg,#fff 0 1px,transparent 1px 4px)}
+.tl{position:relative;padding-left:26px}
+.tl::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--rule-2)}
+.tl .e{position:relative;padding:0 0 16px}
+.tl .e:last-child{padding-bottom:0}
+.tl .e::before{content:'';position:absolute;left:-23px;top:5px;width:10px;height:10px;border-radius:50%;
+  background:var(--paper);border:2px solid var(--rule-2)}
+.tl .e.mine::before{background:var(--teal);border-color:var(--teal)}
+.tl .e.now::before{background:var(--amber);border-color:var(--amber);box-shadow:0 0 0 4px var(--amber-l)}
+/* Teal dot and amber dot are the same dot to anyone who cannot tell teal from
+   amber. Yours carries a tick; the one you are standing on gets a second ring
+   around it, which is also what a reader looks for when scanning for "now". */
+.tl .e.mine::after{content:'';position:absolute;left:-17.5px;top:8px;width:3px;height:6px;
+  border:solid #fff;border-width:0 1.5px 1.5px 0;transform:rotate(42deg)}
+.tl .e.now::after{content:'';position:absolute;left:-26px;top:2px;width:20px;height:20px;
+  border:1.5px solid var(--amber);border-radius:50%}
+.tl .e .s{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:.06em}
+.tl .e .s b{color:var(--teal-d)}
+.tl .e p{margin:3px 0 0;font-size:13.5px;line-height:1.5;color:var(--text-2);max-width:72ch}
+.tl .e.now p{color:var(--text)}
+.faq .q{border-bottom:1px solid var(--rule)}
+.faq .q:last-child{border-bottom:0}
+.faq .q button{width:100%;background:none;border:0;text-align:left;padding:14px 30px 14px 0;cursor:pointer;
+  font-size:14px;font-weight:700;color:var(--text);position:relative;line-height:1.4}
+.faq .q button::after{content:'+';position:absolute;right:4px;top:13px;font-size:19px;font-weight:400;
+  color:var(--teal);transition:transform .2s ease}
+.faq .q.open button::after{transform:rotate(45deg)}
+/* Was max-height 0 -> 640px, which silently cut any answer longer than that.
+   A 0fr -> 1fr grid row animates to the answer's real height, whatever it is. */
+.faq .q .a{display:grid;grid-template-rows:0fr;overflow:hidden;transition:grid-template-rows .3s ease}
+.faq .q .a > *{min-height:0}
+.faq .q.open .a{grid-template-rows:1fr}
+.faq .q .a p{margin:0 0 15px;font-size:13.5px;line-height:1.6;color:var(--text-2);max-width:74ch}
+.notyours{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.notyours li{display:flex;gap:11px;font-size:13.3px;line-height:1.5;color:var(--text-2)}
+.notyours li::before{content:'—';color:var(--red);font-weight:700;flex:none}
+
+/* --------------------------------------------------------- the walkthrough */
+.wt-bg{position:fixed;inset:0;background:rgba(15,26,24,.68);backdrop-filter:blur(4px);z-index:90;
+  display:flex;align-items:center;justify-content:center;padding:24px;animation:fade .28s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.wt{width:100%;max-width:470px;background:var(--paper);border-radius:16px;overflow:hidden;
+  box-shadow:0 40px 80px -24px rgba(0,0,0,.6);animation:pop .34s cubic-bezier(.22,.9,.3,1) both}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.wt .top{position:relative;overflow:hidden;background:#14302d;color:#fff;padding:22px 24px 20px}
+.wt .top > *:not(.bgc){position:relative;z-index:1}
+.wt .top .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(160,222,211,.9);margin-bottom:7px}
+.wt .top h3{font-size:18px;line-height:1.25;color:#fff}
+.wt .b{padding:20px 24px 18px;font-size:14px;line-height:1.6;color:var(--text-2);min-height:96px}
+.wt .b p{margin:0}
+.wt .f{display:flex;align-items:center;gap:12px;padding:14px 24px 20px}
+.wt .dots{display:flex;gap:6px;margin-right:auto}
+.wt .dots i{width:7px;height:7px;border-radius:50%;background:var(--rule-2);transition:all .2s ease}
+.wt .dots i.on{background:var(--teal);width:20px;border-radius:4px}
+.wt .skip{background:none;border:0;color:var(--text-3);font-size:12.5px;cursor:pointer;text-decoration:underline}
+
+/* ================================================================
+   THE CHARTS
+   Added 11 September 2026. Seven components, all additive, all drawn
+   in CSS — no library, no canvas, nothing to load. Class names are
+   fixed: app.js is written against them.
+
+   Two rules run through the whole section. Every fill that means
+   something also carries a shape or a texture, because the gates
+   audit found colour doing the work alone and these charts would
+   repeat the mistake at five times the scale. And every fixed width
+   is a flex basis that is allowed to shrink, because the page must
+   not scroll sideways at 390px — the chart scrolls, or wraps, or
+   truncates, but the page does not move.
+
+   The shapes are the vocabulary defined up in the gates section
+   (tick, ring, slash, hatch, dash); .strip and .legend hook into it
+   rather than inventing a second set.
+   ================================================================ */
+
+/* ------------------------------------------------------------------ funnel
+   One row per stage, a fixed label gutter so the tracks line up down the
+   column, and the number in mono on the right so the digits line up too. */
+.fnl{display:grid;gap:8px}
+.fnl .row{display:flex;align-items:center;gap:10px}
+.fnl .lab{flex:0 1 190px;width:190px;min-width:0;font-size:12.5px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fnl .track{flex:1 1 auto;min-width:0;height:22px;border-radius:6px;background:var(--stone);
+  border:1px solid var(--rule);overflow:hidden}
+.fnl .track > i{display:block;position:relative;height:100%;min-width:3px;
+  background:var(--teal);border-radius:5px 0 0 5px}
+.fnl .track > i.w{background:var(--amber)}
+.fnl .track > i.d{background:var(--red)}
+/* Amber and red are the warning and the failure. The texture is the part that
+   survives a reader who cannot separate them, and the two angles differ. */
+.fnl .track > i.w::after,.fnl .track > i.d::after{content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 2px,transparent 2px 6px)}
+.fnl .track > i.d::after{
+  background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.6) 0 2px,transparent 2px 6px)}
+.fnl .val{flex:0 0 64px;text-align:right;font-family:var(--mono);font-size:12px;color:var(--text-2)}
+/* At 390px the two gutters would leave the track about 100px, which is not a
+   bar, it is a hyphen. Both gutters give up width first. */
+@media(max-width:560px){
+  .fnl .lab{flex-basis:96px;width:96px;font-size:12px}
+  .fnl .val{flex-basis:50px;font-size:11.5px}
+  .fnl .row{gap:8px}
+}
+
+/* ------------------------------------------------------- block strip
+   A table, because it is one: blocks down the side, hand-ins across the top.
+   table-layout:fixed with max-width:0 on the name cell is what lets a long
+   block name ellipsis inside a table cell — without it the cell sizes to its
+   content and the table pushes past the card. */
+.strip{width:100%;border-collapse:separate;border-spacing:3px;font-size:12px;table-layout:fixed}
+.strip th{padding:0 2px 5px;font-size:10px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--text-3);text-align:center;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.strip th:first-child{text-align:left;padding-left:2px}
+.strip td.nm{width:210px;max-width:0;padding:0 6px 0 2px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip td.c{position:relative;height:20px;padding:0;border-radius:4px;
+  background:var(--stone);border:1px solid var(--rule-2)}
+/* none / a few / most / all. The ramp is the teal already in the palette, and
+   each step also carries its shape from the gates vocabulary: nothing, ring,
+   hatch, tick. On the pale step the mark has to be dark to be seen. */
+.strip td.c[data-l="1"]{background:var(--teal-e);border-color:#c3ddd7;--mk:var(--teal-d)}
+.strip td.c[data-l="2"]{background:var(--teal);border-color:var(--teal)}
+.strip td.c[data-l="3"]{background:var(--teal-d);border-color:var(--teal-d)}
+@media(max-width:560px){
+  .strip{font-size:11px;border-spacing:2px}
+  .strip td.nm{width:34%}
+  .strip td.c{height:18px}
+}
+
+/* --------------------------------------------------- student progress spine
+   Each step draws its own segment of the rail, so the rail scrolls with the
+   steps. A rail drawn on .spine itself would sit still while the steps moved
+   under it, because an absolutely-positioned pseudo-element of a scroll box
+   is positioned against the padding box, not the scrolled content. */
+.spine{position:relative;display:flex;overflow-x:auto;padding:4px 0 2px;scrollbar-width:thin}
+.spine .st{position:relative;flex:1 0 118px;min-width:118px;padding:22px 8px 0;text-align:center}
+.spine .st::before{content:'';position:absolute;top:6px;left:0;width:100%;height:2px;background:var(--rule-2)}
+.spine .st:first-child::before{left:50%;width:50%}
+.spine .st:last-child::before{width:50%}
+.spine .dot{position:absolute;top:0;left:50%;margin-left:-7px;width:14px;height:14px;
+  border-radius:50%;background:var(--paper);border:2px solid var(--rule-2);z-index:1}
+.spine .st b{display:block;font-size:12.5px;font-weight:700;line-height:1.3}
+.spine .st span{display:block;margin-top:3px;font-family:var(--mono);font-size:10.5px;color:var(--text-3)}
+.spine .st.f .dot{background:var(--green);border-color:var(--green)}
+.spine .st.w .dot{background:var(--amber-l);border-color:var(--amber)}
+.spine .st.d .dot{background:var(--red);border-color:var(--red)}
+.spine .st.f::before,.spine .st.f:first-child::before{background:var(--green)}
+/* Filed gets a tick, due next gets a filled centre inside its ring, late gets
+   a slash. Three states, three
+   shapes, and none of them needs the colour to be told apart. */
+.spine .st .dot::after{content:'';position:absolute;pointer-events:none;display:none}
+.spine .st.f .dot::after{display:block;left:3px;top:1px;width:3px;height:6px;
+  border:solid #fff;border-width:0 1.5px 1.5px 0;transform:rotate(42deg)}
+.spine .st.w .dot::after{display:block;left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;
+  border-radius:50%;background:var(--amber)}
+.spine .st.d .dot::after{display:block;left:50%;top:1px;width:1.5px;height:8px;margin-left:-.75px;
+  background:#fff;transform:rotate(45deg)}
+/* Today. JS sets left. It is inside the scroll box and so scrolls with the
+   steps; the cap is what makes a 2px line findable. */
+.spine .now{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;
+  background:var(--teal);border-radius:1px;z-index:2}
+.spine .now::before{content:'';position:absolute;top:-3px;left:-3px;width:8px;height:8px;
+  border-radius:50%;background:var(--teal)}
+/* Below 560 the steps would crush to one word a line, which is worse than a
+   scroll: 118px holds a two-word label and a date, and the strip scrolls
+   inside the card rather than the page scrolling sideways. */
+@media(max-width:560px){
+  .spine{padding-bottom:6px}
+  .spine .st{flex:0 0 112px;min-width:112px;padding-left:6px;padding-right:6px}
+  .spine .st b{font-size:12px}
+}
+
+/* --------------------------------------------------------------- histogram
+   Bars are the ground; u is this person's fill growing from the bottom; s is
+   a thin rule at the comparison value. The rule is dashed, so it is a second
+   series and not a shorter bar. */
+.hist{display:flex;align-items:flex-end;gap:3px;height:118px;padding-top:4px;overflow-x:auto}
+.hist i{position:relative;flex:1 1 6px;min-width:6px;height:100%;font-style:normal;
+  background:var(--stone);border-radius:3px 3px 0 0;overflow:hidden}
+.hist i u{position:absolute;left:0;right:0;bottom:0;display:block;text-decoration:none;
+  background:var(--teal);border-radius:3px 3px 0 0}
+.hist i.w u{background:var(--amber)}
+.hist i.d u{background:var(--red)}
+.hist i s{position:absolute;left:0;right:0;height:2px;display:block;text-decoration:none;
+  background-image:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 7px)}
+.hax{display:flex;gap:3px;margin-top:5px;font-family:var(--mono);font-size:10px;color:var(--text-3)}
+.hax span{flex:1 1 6px;min-width:6px;text-align:center;overflow:hidden;white-space:nowrap}
+@media(max-width:560px){.hist{height:96px}}
+
+/* ------------------------------------------------------------ spread strip
+   .tr is the range, .bar the span of marks, .mn the mean, .trig the four-mark
+   trigger. The trigger is a faint dashed rule because it is a threshold, not
+   a value: it must be legible behind the bar without competing with it. */
+.spr{display:grid;gap:8px}
+.spr .row{display:flex;align-items:center;gap:10px}
+.spr .lab{flex:0 1 150px;width:150px;min-width:0;font-size:12.5px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spr .tr{position:relative;flex:1 1 auto;min-width:0;height:20px;border-radius:5px;
+  background:var(--stone);border:1px solid var(--rule)}
+.spr .bar{position:absolute;top:3px;bottom:3px;min-width:3px;border-radius:4px;background:var(--teal)}
+.spr .bar.x{background:var(--red)}
+/* Over the trigger. Hatched, so the row that needs a second look is findable
+   without reading the colour. */
+.spr .bar.x::after{content:'';position:absolute;inset:0;border-radius:inherit;
+  background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.6) 0 2px,transparent 2px 6px)}
+.spr .mn{position:absolute;top:-2px;bottom:-2px;width:2px;margin-left:-1px;
+  background:var(--ink);border-radius:1px}
+.spr .trig{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--rule-2)}
+.spr .val{flex:0 0 64px;text-align:right;font-family:var(--mono);font-size:12px;color:var(--text-2)}
+@media(max-width:560px){
+  .spr .lab{flex-basis:96px;width:96px;font-size:12px}
+  .spr .val{flex-basis:50px;font-size:11.5px}
+  .spr .row{gap:8px}
+}
+
+/* ------------------------------------------------------------------ gauges
+   auto-fit rather than a fixed column count, so four gauges become two and
+   then one without a breakpoint for each step. */
+.gauge{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px}
+.gauge .g{min-width:0;background:var(--paper);border:1px solid var(--rule);
+  border-radius:var(--r);padding:13px 15px}
+.gauge .ring{height:8px;margin-bottom:10px;border-radius:99px;background:var(--stone);overflow:hidden}
+.gauge .ring i{display:block;position:relative;height:100%;min-width:3px;
+  background:var(--teal);border-radius:99px;font-style:normal}
+.gauge .ring i.w{background:var(--amber)}
+.gauge .ring i.d{background:var(--red)}
+.gauge .ring i.w::after,.gauge .ring i.d::after{content:'';position:absolute;inset:0;border-radius:inherit;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 1.5px,transparent 1.5px 5px)}
+.gauge .ring i.d::after{
+  background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.6) 0 1.5px,transparent 1.5px 5px)}
+.gauge .g b{display:block;font-size:25px;font-weight:800;line-height:1;color:var(--teal-d)}
+.gauge .g span{display:block;margin-top:6px;font-size:11.5px;line-height:1.35;color:var(--text-2)}
+/* The big number takes the tone of its own fill, so the state is not stranded
+   in an 8px bar the reader has already scrolled past. */
+.gauge .g:has(.ring i.w) b{color:#8a5f16}
+.gauge .g:has(.ring i.d) b{color:var(--red)}
+
+/* ------------------------------------------------------------------ legend
+   Wraps rather than scrolls: a key that has to be scrolled to is not a key.
+   Swatch classes reuse the gates vocabulary — .ok .due .late .na for states,
+   .l1 .l2 .l3 for the strip ramp, .t .w .d for the funnel and gauge tones. */
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:10px;
+  font-size:11.5px;line-height:1.4;color:var(--text-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{flex:none;position:relative;width:14px;height:14px;border-radius:4px;font-style:normal;
+  background:var(--stone);border:1px solid var(--rule-2)}
+.legend i.ok{background:var(--green);border-color:var(--green)}
+.legend i.due{background:var(--amber);border-color:var(--amber)}
+.legend i.late{background:var(--red);border-color:var(--red)}
+.legend i.na{background:transparent;border-style:dashed}
+.legend i.l1{background:var(--teal-e);border-color:#c3ddd7;--mk:var(--teal-d)}
+.legend i.l2{background:var(--teal);border-color:var(--teal)}
+.legend i.l3{background:var(--teal-d);border-color:var(--teal-d)}
+.legend i.t{background:var(--teal);border-color:var(--teal)}
+.legend i.w{background:var(--amber);border-color:var(--amber)}
+.legend i.d{background:var(--red);border-color:var(--red)}
+.legend i.w::after,.legend i.d::after{display:block;inset:0;border-radius:inherit;
+  background-image:repeating-linear-gradient(45deg,#fff 0 1.5px,transparent 1.5px 5px)}
+.legend i.d::after{background-image:repeating-linear-gradient(-45deg,#fff 0 1.5px,transparent 1.5px 5px)}
+/* A dashed rule in the key, matching the histogram's comparison series. */
+.legend i.s{height:0;border:0;border-top:2px solid transparent;background:none;border-radius:0;
+  background-image:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 7px);
+  background-size:14px 2px;background-repeat:no-repeat;background-position:0 50%}
+
+/* --------------------------------------------------------- charts in print
+   Browsers drop background fills when printing, which would print every chart
+   as an empty outline. These are data, not decoration, so they are forced.
+   Scroll boxes are opened out, because paper does not scroll. */
+@media print{
+  .fnl .track,.fnl .track > i,.strip td.c,.spine .dot,.spine .st::before,.spine .now,
+  .hist i,.hist i u,.hist i s,.spr .tr,.spr .bar,.spr .mn,.gauge .ring,.gauge .ring i,
+  .legend i,.cell,.gates-key i,.hi .bar,.mbar i{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .spine,.hist,.scroll{overflow:visible !important;max-height:none !important}
+  .spine .st,.hax span{flex:1 1 auto;min-width:0}
+  .hist i{flex:1 1 auto;min-width:0}
+  .fnl .row,.spr .row,.gauge .g,.spine .st,.strip tr{break-inside:avoid}
+  .hist{height:88px}
+}
+
+/* --------------------------------------------------------------- quieting */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    transition-duration:.001ms !important}
+  .dcard .faces{transition:none}
+  .login-tell .beats li{opacity:1;transform:none}
+  /* The answer still opens, it just arrives already open. */
+  .faq .q .a{transition:none}
+  /* Charts draw at their final size in one frame. Nothing here is a loading
+     state, so there is nothing to wait for and nothing to miss; a bar that
+     grows tells the reader no more than a bar that is already there. */
+  .fnl .track > i,.gauge .ring i,.spr .bar,.spr .mn,.hist i u,.hist i s,.spine .now{
+    transition:none;animation:none}
+  /* Momentum scrolling in the two chart scrollers is motion the reader did not
+     ask for; the scroll itself still works. */
+  .spine,.hist,.daystrip,.nav .in{scroll-behavior:auto}
+}
+
+/* A label that is read aloud and never drawn. Several inputs — the register
+   search, the hand-in file and note boxes, the gates filter — had no label at
+   all, which leaves a screen reader announcing "edit text" and nothing else. */
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* ======================================================================
+   Stage 3 (21 September 2026) — the explainer, the marks map, the team
+   board, the supervision log, the project menu.  Uses the tokens above;
+   nothing is restyled.
+   ====================================================================== */
+
+/* ---- the explainer: hover / focus on a laptop, the ? on a phone ---- */
+.xp{display:inline-flex;align-items:center;gap:4px;max-width:100%}
+.xp .xp-t{border-bottom:1px dotted var(--teal);cursor:help;text-decoration:none;color:inherit;border-radius:2px}
+.xp .xp-t:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.xp .xp-q{flex:none;width:20px;height:20px;border-radius:50%;border:1px solid var(--teal-e);background:var(--teal-l);
+  color:var(--teal-d);font:700 11px/1 var(--sans);cursor:pointer;padding:0;position:relative;display:inline-flex;
+  align-items:center;justify-content:center}
+/* a 20 px dot is too small a thumb target: the tap area is 44 px, the dot stays 20 */
+.xp .xp-q::after{content:"";position:absolute;inset:-12px}
+.xp .xp-q[aria-expanded=true],.xp .xp-q:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.xp .xp-q:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.xp-b{position:fixed;z-index:80;max-width:min(320px,calc(100vw - 16px));background:var(--ink);color:#fff;
+  border-radius:9px;padding:11px 13px;font:400 13px/1.5 var(--sans);box-shadow:0 12px 32px -10px rgba(0,0,0,.45);
+  animation:xp-in .14s ease-out}
+.xp-b b{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#8fd3c9;margin-bottom:4px}
+.xp-b .xp-x{position:absolute;top:6px;right:6px;width:28px;height:28px;border:0;background:transparent;color:#fff;
+  font-size:18px;cursor:pointer;border-radius:6px}
+.xp-b .xp-x:focus-visible{outline:2px solid #8fd3c9}
+.xp-b.tap{padding-right:34px}
+@keyframes xp-in{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.xp-b{animation:none}}
+.xp-first{display:flex;gap:10px;align-items:center;background:var(--teal-l);border:1px solid var(--teal-e);
+  border-radius:8px;padding:9px 12px;font-size:13px;color:var(--teal-d);margin-bottom:14px}
+.xp-first button{margin-left:auto;flex:none}
+th .xp,.pill .xp,.hi .t .xp{font-size:inherit}
+
+/* ---- the reversed mark on the dark header ---- */
+.topbar img.gwmark{height:30px}
+
+/* ---- the student home: this week, team standing, the marks map ---- */
+.week .row{display:grid;grid-template-columns:58px 1fr auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.week .row:last-child{border-bottom:0}
+.week .d{font-family:var(--mono);font-size:12px;color:var(--text-3)}
+.week .w b{font-size:14px} .week .w span{display:block;font-size:12.5px;color:var(--text-2);margin-top:2px}
+.week .row.over .d{color:var(--red)} .week .row.done .w b{color:var(--text-3);text-decoration:line-through}
+.stand{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.stand .s{border:1px solid var(--rule);border-radius:8px;padding:9px 11px;background:var(--paper);display:flex;gap:8px;align-items:flex-start}
+.stand .s i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--rule-2);margin-top:1px}
+.stand .s.ok i{background:var(--green);border-color:var(--green)}
+.stand .s.wait i{background:var(--amber-l);border-color:var(--amber)}
+.stand .s.bad i{background:var(--red);border-color:var(--red)}
+.stand .s b{display:block;font-size:13px} .stand .s span{font-size:11.5px;color:var(--text-2)}
+.mmap{width:100%;border-collapse:collapse}
+.mmap td,.mmap th{padding:8px 6px;border-bottom:1px solid var(--rule);text-align:left;font-size:13px;vertical-align:top}
+.mmap th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);font-weight:600}
+.mmap td.c{font-family:var(--mono);font-size:12px;white-space:nowrap}
+.mmap td.m{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;white-space:nowrap}
+.mmap td.m small{font-weight:400;color:var(--text-3);font-size:11px}
+.mmap tr.out td{color:var(--text-3)}
+
+/* ---- the project menu ---- */
+.menu .p{border:1px solid var(--rule);border-radius:8px;padding:11px 13px;margin-bottom:8px;background:var(--paper)}
+.menu .p b{font-size:14px} .menu .p .pr{font-size:13px;color:var(--text-2);margin:4px 0}
+.menu .p .for{font-size:12px;color:var(--text-3)} .menu .p .full{font-size:13px;margin-top:8px;line-height:1.5}
+.menu .p .full p{margin:0 0 6px}
+.menu .p.taken{border-left:3px solid var(--amber)} .menu .p.full2{border-left:3px solid var(--red);opacity:.85}
+.menu .p.mine{border-left:3px solid var(--teal);background:var(--teal-l)}
+
+/* ---- the convener's board ---- */
+table.board td,table.board th{font-size:12.5px;padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
+table.board th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);white-space:nowrap}
+table.board td.n{font-family:var(--mono);white-space:nowrap}
+table.board .stuck{color:var(--red);font-size:12px} table.board .todo2{color:#8a5f16;font-size:12px}
+table.board tr.pick{cursor:pointer} table.board tr.pick:hover td{background:var(--stone)}
+.tick{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid var(--rule-2);vertical-align:-2px;margin-right:3px}
+.tick.ok{background:var(--green);border-color:var(--green)} .tick.no{background:transparent}
+.tick.acc{background:var(--teal);border-color:var(--teal)}
+
+/* ---- supervision log ---- */
+.sup{display:flex;gap:6px;flex-wrap:wrap}
+.sup button,.sup .wk{width:44px;height:44px;border-radius:8px;border:1px solid var(--rule-2);background:var(--paper);
+  font:600 12px var(--mono);color:var(--text-2);display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0}
+.sup .held{background:var(--green-l);border-color:var(--green);color:#3a5c34}
+.sup .missed{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.sup .unc{border-style:dashed}
+.sup .wk small{font-size:9px;font-weight:400}
+.sup button:disabled{opacity:.45;cursor:default}
+
+/* ---- the individual marking rows ---- */
+.irow{display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.irow:last-child{border-bottom:0}
+.irow .who b{font-size:14px} .irow .who span{font-family:var(--mono);font-size:11.5px;color:var(--text-3);margin-left:8px}
+.irow .nums{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;margin-top:8px}
+.irow .nums label{display:flex;flex-direction:column;gap:3px;font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}
+.irow .nums input[type=number]{width:62px}
+.irow .tot{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--teal-d);white-space:nowrap}
+.irow .tot small{font-weight:400;font-size:11px;color:var(--text-3)}
+.irow .why{margin-top:6px;width:100%}
+.irow .act{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;align-items:center}
+@media (max-width:560px){.irow{grid-template-columns:1fr} .week .row{grid-template-columns:52px 1fr} .week .row>*:last-child{grid-column:2}}
+
+/* ---- settings ---- */
+.setrow{display:grid;grid-template-columns:200px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule)}
+.setrow:last-child{border-bottom:0}
+.setrow .k{font-family:var(--mono);font-size:12px} .setrow .note{font-size:11.5px;color:var(--text-3);margin-top:2px}
+@media (max-width:560px){.setrow{grid-template-columns:1fr}}
+
+/* ---- the helper (register AX) ------------------------------------------
+   The button lives in the dark top bar on every screen; the panel is the
+   ordinary .modal, widened, so focus, Esc and the focus-restore come from
+   one implementation rather than two.  It reads at 360 px, every target is
+   44 px, and nothing animates when the reader has asked it not to. */
+.topbar .out.helpbtn{gap:6px;padding:0 11px;border-color:rgba(255,255,255,.45)}
+.topbar .out.helpbtn .q{display:inline-flex;align-items:center;justify-content:center;
+  width:17px;height:17px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);
+  font:800 11px/1 var(--sans);flex:none}
+.topbar .out.helpbtn:hover{background:rgba(255,255,255,.16)}
+@media (max-width:560px){.topbar .out.helpbtn .l{display:none}.topbar .out.helpbtn{padding:0 9px}}
+
+.hlp-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--teal-l);
+  border:1px solid var(--teal-e);border-left:3px solid var(--teal);border-radius:9px;
+  padding:10px 13px;margin:0 0 14px;font-size:13px;line-height:1.45;color:var(--teal-d)}
+.hlp-line span{flex:1 1 220px;min-width:0}
+.hlp-line button{flex:none}
+
+.modal.wide{max-width:600px}
+.modal.wide > .b{padding:0;max-height:min(74vh,720px);overflow:auto;-webkit-overflow-scrolling:touch}
+.hlp-load{padding:34px 20px;text-align:center;color:var(--text-3);font-size:13.5px}
+.hlp-s{padding:14px 18px;border-bottom:1px solid var(--rule)}
+.hlp-s:last-child{border-bottom:0}
+.hlp-h{display:flex;align-items:baseline;gap:10px;margin-bottom:9px}
+.hlp-h b{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--teal-d)}
+.hlp-h span{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--text-3)}
+
+.hlp-next{display:flex;flex-direction:column;gap:9px}
+.hlp-row{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:start;
+  border:1px solid var(--rule);border-left:3px solid var(--rule-2);border-radius:9px;padding:10px 12px;background:var(--paper)}
+.hlp-row.now{border-left-color:var(--amber);background:var(--amber-l)}
+.hlp-row.over{border-left-color:var(--red);background:var(--red-l)}
+.hlp-row .n{font:800 13px/22px var(--mono);color:var(--text-3);text-align:center}
+.hlp-row .t{min-width:0}
+.hlp-row .t b{display:block;font-size:13.5px;line-height:1.4}
+.hlp-row .t span{display:block;font-size:12.5px;color:var(--text-2);line-height:1.45;margin-top:3px}
+.hlp-row .t i{display:block;font-style:normal;font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:5px}
+.hlp-row > button{align-self:center}
+.hlp-empty{border:1px dashed var(--rule-2);border-radius:9px;padding:14px;background:var(--stone)}
+.hlp-empty b{display:block;font-size:13.5px;margin-bottom:3px}
+.hlp-empty span{font-size:12.5px;color:var(--text-2);line-height:1.5}
+
+.hlp-ask{display:flex;gap:8px}
+.hlp-ask input{flex:1 1 auto;min-width:0;min-height:44px}
+.hlp-ask button{flex:none;min-width:64px}
+.hlp-res{margin-top:12px}
+.hlp-a{border:1px solid var(--teal-e);background:var(--teal-l);border-radius:9px;padding:12px 14px}
+.hlp-a h4{font-size:13.5px;color:var(--teal-d);margin:0 0 6px}
+.hlp-a p{margin:0;font-size:13.5px;line-height:1.55;color:var(--text)}
+.hlp-a .src{margin-top:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--text-3)}
+.hlp-go{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.hlp-go .src{margin:0;margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--text-3)}
+.hlp-more{margin-top:10px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.hlp-more i{font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.hlp-more .lnk{min-height:36px;padding:6px 10px;border:1px solid var(--rule-2);border-radius:7px;background:var(--paper);
+  font:600 12px var(--sans);color:var(--teal-d);cursor:pointer;text-align:left}
+.hlp-more .lnk:hover{background:var(--teal-l);border-color:var(--teal-e)}
+.hlp-more .lnk:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.hlp-none{border:1px solid var(--rule-2);border-radius:9px;padding:12px 14px;background:var(--stone)}
+.hlp-none b{display:block;font-size:13.5px;margin-bottom:5px}
+.hlp-none p{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--text-2)}
+.hlp-none p.foot{margin:0;font-size:12px;color:var(--text-3)}
+
+.hlp-person b{display:block;font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--teal-d);margin-bottom:7px}
+.hlp-person p{margin:0 0 8px;font-size:13.5px;line-height:1.5}
+.hlp-person p.foot{font-size:12px;color:var(--text-3);margin:0}
+.hlp-person .say{border-left:3px solid var(--teal);background:var(--teal-l);border-radius:0 8px 8px 0;
+  padding:9px 12px;margin:0 0 9px}
+.hlp-person .say i{display:block;font-style:normal;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+.hlp-person .say span{font-size:13px;line-height:1.5;color:var(--teal-d)}
+
+@media (max-width:560px){
+  .modal.wide > .b{max-height:calc(100vh - 150px)}
+  .hlp-s{padding:13px 14px}
+  .hlp-row{grid-template-columns:22px 1fr}
+  .hlp-row > button{grid-column:2;justify-self:start;margin-top:8px}
+}
+@media(prefers-reduced-motion:reduce){.hlp-a,.hlp-row{transition:none}}
+.hlp-ai{margin-top:10px;border:1px solid var(--amber);border-left:3px solid var(--amber);
+  background:var(--amber-l);border-radius:9px;padding:11px 13px}
+.hlp-ai b{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#8a5f16;margin-bottom:5px}
+.hlp-ai p{margin:0;font-size:13.5px;line-height:1.55;color:var(--text)}
+.hlp-ai .src{margin-top:7px;font-family:var(--mono);font-size:10.5px;color:var(--text-3)}
+/* the term a Next-for-you line turns on, on a line of its own: the label and
+   its "?" stay together as one chip, so the "?" never dangles on its own */
+.hlp-row .t .xpline{margin-top:7px}
+.hlp-row .t .xpline .xp{display:inline-flex;align-items:center;gap:5px;max-width:100%}
+.hlp-row .t .xpline .xp-t{font-size:12px;font-weight:600;color:var(--teal-d)}
+
+/* the "How the 20 is split" line above the rubric key on the marking screen */
+.rubcap{margin:10px 0 -4px;font-size:13px;color:var(--text-2)}
+
+
+/* ===================================================================== 22 September 2026 · the redesign (register BD)
+   Phone first, house tokens: a bar at the bottom of the screen, one "now" card, hand-ins that fold, the board as cards. */
+.tabbar{display:none}
+.tabbar .in{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;max-width:640px;margin:0 auto}
+.tabbar a,.tabbar .more{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;padding:6px 2px;
+  font:600 10.5px/1.1 var(--sans);letter-spacing:.01em;color:var(--text-3);text-decoration:none;background:none;border:0;cursor:pointer;position:relative}
+.tabbar .ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabbar a.on,.tabbar .more.on{color:var(--teal-d)}
+.tabbar a.on::before{content:'';position:absolute;top:0;left:22%;right:22%;height:3px;background:var(--teal);border-radius:0 0 3px 3px}
+.tabbar .pip{position:absolute;top:5px;right:calc(50% - 22px);min-width:16px;height:16px;line-height:16px;border-radius:99px;background:var(--red);color:#fff;font-size:10px;text-align:center;padding:0 4px}
+.tabbar a:focus-visible,.tabbar .more:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.modal.sheet{max-width:420px}
+.more-list{display:grid;gap:8px}.more-list .btn{justify-content:flex-start;font-size:15px;min-height:46px}
+@media (max-width:560px){
+  body{font-size:16px}
+  body.has-tabbar .tabbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--paper);border-top:1px solid var(--rule);
+    padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -6px 20px -14px rgba(28,26,23,.35)}
+  body.has-tabbar .nav{display:none}
+  body.has-tabbar main{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+  body.has-tabbar .topbar .out:not(.helpbtn){display:none}
+  .topbar .in{padding:10px 14px}
+  .banner{font-size:11.5px;padding:5px 12px}
+  .btn{min-height:44px;font-size:15px}.btn.sm{min-height:40px;font-size:13.5px}
+  input,select,textarea{font-size:16px}
+  .card{border-radius:12px}
+  .page-h h1{font-size:24px}
+  .hero .in{padding:18px 16px 16px}.hero h1{font-size:24px}
+  .modal-bg{align-items:flex-end}
+  .modal.sheet{max-width:none;border-radius:16px 16px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
+}
+/* the now card */
+.now{background:var(--paper);border:1px solid var(--rule);border-left:5px solid var(--teal);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px}
+.now.late{border-left-color:var(--red)}
+.now .hi-line{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.now h1{font-size:24px;line-height:1.1;letter-spacing:-.02em;margin:0}
+.now .sub{font-family:var(--mono);font-size:11.5px;color:var(--text-3);letter-spacing:.04em}
+.now .main{margin-top:12px;padding-top:12px;border-top:1px solid var(--rule)}
+.now .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-d)}
+.now.late .k{color:var(--red)}
+.now .t{font-size:19px;font-weight:700;line-height:1.25;margin:4px 0 2px;letter-spacing:-.01em}
+.now .w{font-size:13.5px;color:var(--text-2)}
+.now .cta{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.now .strip{margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--text-2)}
+.now .prog{flex:1 1 120px;height:8px;background:var(--stone);border-radius:99px;overflow:hidden;min-width:100px}
+.now .prog i{display:block;height:100%;background:var(--teal);border-radius:99px}
+.now .chip{display:inline-flex;align-items:center;gap:6px;background:var(--teal-l);color:var(--teal-d);border:1px solid var(--teal-e);border-radius:99px;padding:3px 10px;font-size:12px}
+.now .chip b{font-family:var(--mono);font-weight:600}
+/* hand-ins that fold */
+.hi .hi-h{cursor:pointer;display:flex;align-items:flex-start;gap:8px}
+.hi .hi-h .t{flex:1;min-width:0}
+.hi .hi-h .caret{flex:none;width:24px;height:24px;margin-top:1px;border-radius:50%;background:var(--stone);position:relative}
+.hi .hi-h .caret::after{content:'';position:absolute;left:8px;top:6px;width:6px;height:6px;border-right:2px solid var(--text-3);border-bottom:2px solid var(--text-3);transform:rotate(45deg);transition:transform .15s}
+.hi.open .hi-h .caret::after{transform:rotate(225deg);top:9px}
+.hi .hi-body{display:none}.hi.open .hi-body{display:block}
+.hi .hi-h:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-radius:6px}
+.hint.pad{padding:8px 16px 10px;border-bottom:1px solid var(--rule);margin:0}
+/* the board as cards on a phone */
+@media (max-width:700px){
+  .scroll:has(> table.board){overflow:visible}
+  table.board,.board tbody,.board tr,.board td{display:block;width:100%;box-sizing:border-box}
+  .board thead{display:none}
+  .board tr.pick{border:1px solid var(--rule);border-radius:12px;background:var(--paper);margin:10px 0;padding:10px 12px;box-shadow:var(--shadow)}
+  .board td{display:flex;gap:10px;align-items:baseline;padding:4px 0;border:0}
+  .board td::before{content:attr(data-label);flex:0 0 78px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)}
+  .board td.n{display:block;font-size:16px;padding-bottom:6px;border-bottom:1px solid var(--rule);margin-bottom:4px}
+  .board td.n::before{display:none}
+}
+/* marking on a phone */
+@media (max-width:560px){
+  .rub{grid-template-columns:repeat(3,1fr)}
+}
+
+
+/* ------------------------------------------------ 22 September, stage 2: the look (register BD.6) */
+:root{--gu-red:#b02125}
+.topbar{box-shadow:inset 0 -3px 0 var(--gu-red)}           /* the papers' red rule under the masthead */
+.nav a{gap:8px}
+.nav a .ico{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:1}
+.nav a.on .ico{opacity:1}
+.card{border-radius:12px;box-shadow:0 1px 2px rgba(28,26,23,.04),0 14px 34px -22px rgba(28,26,23,.30)}
+.card > .h h3{font-size:15px;letter-spacing:-.01em}
+.page-h h1{font-size:30px;letter-spacing:-.022em}
+.page-h .eyebrow{color:var(--teal-d)}
+.btn{border-radius:8px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.14)}
+.btn.ghost{box-shadow:none}
+.btn:not(.ghost):hover{filter:brightness(1.06)}
+.stat .n{font-size:32px}
+.pill{font-weight:600}
+.week .w .xp{display:inline-flex}.week .w .xp-t{display:inline}   /* the ? beside a title no longer drops to its own line */
+.stand .s b .xp{display:inline-flex}
+@media (min-width:1024px){
+  body.has-tabbar .topbar .in{max-width:none;padding:9px 22px}
+  body.has-tabbar .nav{position:fixed;left:0;top:52px;bottom:0;width:212px;border-bottom:0;border-right:1px solid var(--rule);background:var(--paper);overflow:auto;z-index:30}
+  body.has-tabbar .nav .in{flex-direction:column;align-items:stretch;gap:2px;padding:14px 10px;overflow:visible;max-width:none}
+  body.has-tabbar .nav a{min-height:42px;padding:0 12px;border-bottom:0;border-radius:8px;gap:10px;font-size:14px;color:var(--text-2)}
+  body.has-tabbar .nav a .ico{width:20px;height:20px}
+  body.has-tabbar .nav a.on{background:var(--teal-l);color:var(--teal-d);box-shadow:inset 3px 0 0 var(--teal)}
+  body.has-tabbar .nav a:hover{background:var(--stone);color:var(--teal-d)}
+  body.has-tabbar .nav a .pip{margin-left:auto}
+  body.has-tabbar main{margin-left:212px;max-width:none;padding:26px 36px 64px}
+  body.has-tabbar main > div{max-width:1040px}
+  body.has-tabbar .banner{padding-left:224px}
+}
+
+
+/* ------------------------------------------------ 22 September, stage 3 (register BD.8): the queue, the tiles, the tour */
+/* marking: the queue of teams, and cards that fold on a phone */
+.mqueue{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.mq{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:99px;background:var(--paper);border:1px solid var(--rule-2);font-size:12.5px;color:var(--text-2)}
+.mq b{font-family:var(--mono);font-weight:600;color:var(--teal-d)}
+.mq.ok{background:var(--green-l);border-color:#cfe0cb;color:#3a5c34}.mq.ok b{color:#3a5c34}
+.mq:hover,.mq:focus-visible{border-color:var(--teal);outline:none}
+.team-mark .hd .caret{display:none}
+@media (max-width:560px){
+  .team-mark .hd{cursor:pointer;position:relative;padding-right:40px}
+  .team-mark .hd .caret{display:block;position:absolute;right:12px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--stone)}
+  .team-mark .hd .caret::after{content:'';position:absolute;left:8px;top:6px;width:6px;height:6px;border-right:2px solid var(--text-3);border-bottom:2px solid var(--text-3);transform:rotate(45deg)}
+  .team-mark.open .hd .caret::after{transform:rotate(225deg);top:9px}
+  .team-mark .tm-body{display:none}.team-mark.open .tm-body{display:block}
+}
+/* the staff home: tiles */
+.now.staff .blurb{margin:8px 0 0;font-size:14px;line-height:1.5;color:var(--text-2);max-width:70ch}
+.now.staff .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.now.staff .tiles .stat{text-decoration:none;display:block}
+.now.staff .tiles a.stat:hover{border-color:var(--teal);box-shadow:var(--shadow)}
+.now.staff .cta{margin-top:14px}
+@media (max-width:820px){.now.staff .tiles{grid-template-columns:repeat(2,1fr)}}
+/* the tour, as coach-marks on the real screen */
+.wt-bg.coach{background:transparent;backdrop-filter:none;pointer-events:none;display:block}
+.wt-bg.coach.nospot{background:rgba(15,26,24,.62)}
+.wt-spot{position:fixed;z-index:91;border-radius:12px;box-shadow:0 0 0 9999px rgba(15,26,24,.62),0 0 0 3px var(--paper),0 0 0 6px var(--teal);pointer-events:none;transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
+.wt-spot[hidden]{display:none}
+.wt.coach{position:fixed;z-index:92;pointer-events:auto;width:min(400px,calc(100vw - 24px));max-width:none;box-shadow:0 30px 60px -20px rgba(0,0,0,.55)}
+.wt.coach.centered{left:50%;top:50%;transform:translate(-50%,-50%)}
+.wt.coach .top{display:flex;gap:12px;align-items:flex-start;padding:16px 18px 14px}
+.wt.coach .top .rb-face{flex:none;width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;display:grid;place-items:center;font-size:13px;letter-spacing:.05em;border:2px solid rgba(255,255,255,.35)}
+.wt.coach .top h3{font-size:16px;margin-top:3px}
+.wt.coach .b{padding:14px 18px 12px;min-height:0}
+.wt.coach .b .try{margin-top:8px;font-size:12.5px;color:var(--teal-d)}
+.wt.coach .f{padding:10px 18px 16px}
+@media (max-width:560px){
+  .wt.coach{left:8px!important;right:8px;width:auto!important;top:auto!important;bottom:calc(72px + env(safe-area-inset-bottom,0px));transform:none;border-radius:14px}
+  .wt.coach .top{padding:14px 14px 10px}.wt.coach .b{padding:10px 14px 8px;font-size:13.5px}.wt.coach .f{padding:8px 14px 12px}
+}
+/* Rashid Bhai on the sign-in screen */
+.askbox{margin-top:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px;max-width:440px}
+.askbox .ab-h{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.askbox .rb-face{flex:none;width:34px;height:34px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;display:grid;place-items:center;font-size:12px;letter-spacing:.05em}
+.askbox .ab-h b{display:block;color:#fff;font-size:14px}.askbox .ab-h span{font-size:12px;color:rgba(233,242,240,.78)}
+.askbox .ab-ask{display:flex;gap:8px}
+.askbox .ab-ask input{flex:1;min-width:0;font:inherit;font-size:14px;padding:8px 11px;border-radius:8px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.92);color:var(--text)}
+.askbox .ab-out h4{margin:12px 0 4px;color:#fff;font-size:14px}
+.askbox .ab-out p{margin:0;font-size:13px;line-height:1.5;color:rgba(233,242,240,.9)}
+.askbox .ab-out .src{font-family:var(--mono);font-size:10.5px;color:rgba(233,242,240,.6);margin-top:6px}
+.askbox .ab-out .also{margin-top:8px;font-size:12px;color:rgba(233,242,240,.78)}
+.askbox .ab-out .also button{all:unset;cursor:pointer;color:#a0ded3;text-decoration:underline;margin-right:8px}
+
+
+/* ------------------------------------------------ 22 September, stage 4: the audit's two-hour list (register BD.9) */
+@media (min-width:821px){
+  .stand{grid-template-columns:repeat(4,1fr)}              /* seven tiles: four and three, never one alone */
+  .gauge{grid-template-columns:repeat(4,1fr)}
+}
+.gauge .g{display:flex;flex-direction:column}
+.strip td:first-child,.strip th:first-child{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2}
+.card > .h .tag select{max-width:100%}
+@media (max-width:560px){
+  .card > .h{flex-wrap:wrap}
+  .card > .h .tag:has(select){flex-basis:100%;margin-left:0}
+  .card > .h .tag select{width:100%;font-size:15px}
+  .courses{display:flex;overflow-x:auto;gap:8px;padding:2px 2px 8px;margin-bottom:12px;scrollbar-width:none}
+  .courses::-webkit-scrollbar{display:none}
+  .courses .cbtn{flex:0 0 auto;width:168px}
+  .cbtn .ct{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px}
+}
+.nav a.on .ico{stroke-width:2.2}
+
+
+/* ------------------------------------------------ 22 September, register BF: notices, the merge page, viva day, the trackers */
+.notice{padding:10px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:start}
+.notice:last-child{border-bottom:0}
+.notice p{margin:0;font-size:15px;line-height:1.5;white-space:pre-line}
+.notice .meta{grid-column:1;font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:4px}
+.notice .btn{grid-column:2;grid-row:1/3}
+.card.notices > .b{padding-top:4px;padding-bottom:4px}
+.nform{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.nform label.f{margin:0}
+#notice-body{width:100%;min-height:76px;font:inherit;font-size:14.5px;padding:9px 11px;border:1px solid var(--rule-2);border-radius:8px;resize:vertical;box-sizing:border-box}
+.mrows{display:grid;gap:8px}
+.mrow2{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--rule)}
+.mrow2 .mn{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--teal-d);padding-top:9px}
+.mrow2 .mf{display:grid;gap:6px}
+.mrow2 .mf input,.mrow2 .mf textarea{width:100%;box-sizing:border-box;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--rule-2);border-radius:8px}
+.mrow2 .mf textarea{min-height:52px;resize:vertical}
+ol.sections{margin:0;padding-left:22px;display:grid;gap:8px;font-size:14.5px;line-height:1.45}
+ol.sections li b{display:block}ol.sections li span{color:var(--text-2)}ol.sections li i{display:block;font-style:normal;font-family:var(--mono);font-size:11px;color:var(--teal-d);margin-top:2px}
+.gates th .due{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:0;text-transform:none;color:var(--text-3);margin-top:2px;font-weight:500}
+.gates th .due.soon{color:#8a5f16}.gates th .due.past{color:var(--red)}
+.strip td.c .nn{font-family:var(--mono);font-size:10px;color:var(--text-2);position:relative;z-index:1}
+.week .row .w b .xp{display:inline-flex}
+/* viva day */
+.viva .vwho{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.viva .vwho b{font-size:22px;letter-spacing:-.01em}.viva .vwho span{font-family:var(--mono);font-size:12px;color:var(--text-3)}
+.viva .vclock{display:flex;align-items:center;gap:10px;margin:6px 0 14px;flex-wrap:wrap}
+.viva .clock{font-family:var(--mono);font-size:40px;font-weight:600;letter-spacing:.02em;color:var(--teal-d);min-width:110px}
+.viva .clock.over{color:var(--red)}
+.viva .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.viva .vgrid label.f{margin:0}
+.viva #viva-mark{font-size:28px;text-align:center;font-family:var(--mono);font-weight:600;width:100%;box-sizing:border-box}
+.viva #viva-why{width:100%;box-sizing:border-box;font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--rule-2);border-radius:8px}
+.viva .vnav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+@media (max-width:560px){.viva .vnav .btn{flex:1 1 40%}}
+/* the trackers */
+table.trk{font-size:13px}
+table.trk td{padding:6px 5px;vertical-align:middle}
+table.trk input:not([type=checkbox]),table.trk select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--rule-2);border-radius:6px;background:#fff;color:var(--text);min-width:64px;width:100%;box-sizing:border-box}
+table.trk input[type=date]{min-width:130px}
+table.trk td.act{white-space:nowrap;text-align:right}
+table.trk td.act .btn{margin-left:6px}
+/* the register and the trackers as cards on a phone */
+@media (max-width:700px){
+  .scroll:has(> table.reg),.scroll:has(> table.trk){overflow:visible}
+  table.reg,table.reg tbody,table.reg tr,table.reg td,table.trk,table.trk tbody,table.trk tr,table.trk td{display:block;width:100%;box-sizing:border-box}
+  table.reg thead,table.trk thead{display:none}
+  table.reg tr,table.trk tr{border:1px solid var(--rule);border-radius:12px;background:var(--paper);margin:10px 0;padding:10px 12px}
+  table.reg td,table.trk td{display:flex;gap:10px;align-items:center;padding:4px 0;border:0}
+  table.reg td::before,table.trk td::before{content:attr(data-label);flex:0 0 78px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)}
+  table.reg td.act,table.trk td.act{justify-content:flex-end}
+  table.reg td.act::before,table.trk td.act::before{content:''}
+}
+
+/* 22 September, register BG */
+.mgrid{display:grid;grid-template-columns:1.4fr 1fr 1.3fr .8fr .7fr;gap:8px;margin-bottom:8px}
+.mgrid label.f{margin:0}
+@media (max-width:820px){.mgrid{grid-template-columns:1fr 1fr}}
+.team-mark .hd .draft{margin-left:6px}
+.team-mark .hd .draft .btn{padding:3px 9px;min-height:28px;font-size:12px}
+
+/* 22 September, register BH: the sign-out sheet, form F2, the AI declaration, appeals, the Review */
+p.rules{margin:0 0 10px;font-size:13.5px;line-height:1.55;color:var(--text-2)}
+.soform label.f,.soform .f{margin-bottom:8px}.soform .two,.f2 .two,.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+.chks{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px}
+label.chk{display:inline-flex;gap:7px;align-items:flex-start;font-size:13.5px;line-height:1.4;cursor:pointer}label.chk input{margin-top:3px;flex:none}
+label.chk.decl{margin:4px 0 10px;padding:10px;border:1px solid var(--rule);border-radius:8px;background:var(--bg-2,rgba(0,0,0,.02))}
+.soline{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--rule);border-radius:8px;margin-bottom:8px;background:var(--bg-2,rgba(0,0,0,.02))}
+.soline.out{border-color:var(--teal,#14524b)}.soline.late{border-color:var(--red);background:rgba(190,40,40,.06)}
+.closedlist{margin-top:8px;font-size:13px;color:var(--red)}.past{margin-top:8px;font-size:12.5px;color:var(--text-2)}.past>b{display:block;margin-bottom:4px}
+.f2 .msg.warn{margin-top:8px}.f2 label.f,.f2 .f{margin-bottom:8px}.f2 input[type=text],.f2 textarea{width:100%}
+.airows .airow{display:grid;grid-template-columns:22px 1fr 1.4fr 1.4fr 1fr 28px;gap:6px;align-items:center;margin-bottom:6px}
+@media (max-width:700px){.airows .airow{grid-template-columns:22px 1fr 28px}.airows .airow input:nth-child(3),.airows .airow input:nth-child(4),.airows .airow input:nth-child(5){grid-column:2}}
+.aiform .k{font:11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal,#14524b);margin:12px 0 6px}.aiform .sub{font-size:13px;color:var(--text-2);line-height:1.5}
+.aiform textarea{width:100%}.aiform p{margin:0 0 6px;font-size:14px;line-height:1.55}.aiform table.ai td{vertical-align:top;font-size:13px}
+.act.ai .filed{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.team-mark .hd .aichip,.team-mark .hd .rvchip{margin-left:6px}.team-mark .hd .aichip .btn{padding:3px 9px;min-height:28px;font-size:12px}
+.deskline{padding:10px 14px;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:1.6fr 1fr auto;gap:10px;align-items:center}
+.deskline .t b{display:block}.deskline .t span{font-size:13px}.deskline .times{display:flex;flex-direction:column;gap:2px;font-family:var(--mono);font-size:12px}
+.deskline .acts{display:flex;flex-direction:column;gap:6px;align-items:flex-start}.deskline.late{background:rgba(190,40,40,.06)}.deskline.back,.deskline.closed{opacity:.75}
+@media (max-width:760px){.deskline{grid-template-columns:1fr}}
+.sheet{padding:12px 14px;border-bottom:1px solid var(--rule)}.sheet .sh{display:flex;gap:10px;align-items:baseline;margin-bottom:6px}.sheet .sh b.total{margin-left:auto;font-family:var(--mono);font-size:18px;color:var(--teal,#14524b)}
+.sheet .rows label.sr{display:grid;grid-template-columns:1fr 64px 30px;gap:8px;align-items:center;font-size:13px;line-height:1.4;margin-bottom:5px}.sheet .rows i{font-style:normal;color:var(--text-3);font-family:var(--mono);font-size:12px}
+.sheet .boxes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}.sheet .boxes b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:4px}
+.sheet .boxes label.chk{display:flex;font-size:12.5px;margin-bottom:3px}.sheet input[type=text]{width:100%}
+@media (max-width:600px){.sheet .boxes{grid-template-columns:1fr}}
+.notice.late{border-color:var(--red)}
